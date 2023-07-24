@@ -1,9 +1,6 @@
 import Test
 import "Test2"
 
-pub let admin = blockchain.createAccount()
-
-
 /**/////////////////////////////////////////////////////////////
 //                              SETUP                         //
 /////////////////////////////////////////////////////////////**/
@@ -12,6 +9,7 @@ pub fun setup() {
 
     //  Accounts
     
+    let admin = blockchain.createAccount()
     let user = blockchain.createAccount()
     let gifter_1 = blockchain.createAccount()
     let gifter_2 = blockchain.createAccount()
