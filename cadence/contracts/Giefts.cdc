@@ -192,7 +192,7 @@ pub contract Giefts {
     // @params _gieft: the gieft uuid to fetch
     // @returns: the gieft resource
     pub fun fetch(_ from: Address, _gieft: UInt64): &Gieft? {
-        let capability = getAccount(from).getCapability<&GieftCollection>(/public/GieftsCollection)
+        let capability = getAccount(from).getCapability<&GieftCollection>(/public/Giefts)
         if capability.check() {
             return capability.borrow()!.borrowGieft(_gieft)
         } else {
