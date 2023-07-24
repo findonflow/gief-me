@@ -1,5 +1,11 @@
 {
   "contracts": {
+    "Giefts": {
+      "source": "./cadence/contracts/Giefts.cdc",
+      "aliases": {
+        "emulator": "f8d6e0586b0a20c7"
+      }
+    },
     "NonFungibleToken": {
       "source": "./modules/flow-utils/cadence/contracts/NonFungibleToken.cdc",
       "aliases": {
@@ -51,6 +57,11 @@
     "emulator-account": {
       "address": "f8d6e0586b0a20c7",
       "key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
+    }
+  },
+  "deployments": {
+    "emulator": {
+      "emulator-account": ["Giefts", "NonFungibleToken"]
     }
   }
 }

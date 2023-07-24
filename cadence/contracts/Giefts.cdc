@@ -1,4 +1,4 @@
-import "../../modules/flow-utils/cadence/contracts/NonFungibleToken.cdc";
+import "NonFungibleToken"
 
 //                      _       __ _
 //                __ _(_) ___ / _| |_ ___
