@@ -9,6 +9,9 @@
     "Test2": {
       "source": "./cadence/tests/util/Test2.cdc"
     },
+    "BaseTest": {
+      "source": "./cadence/tests/util/BaseTest.cdc"
+    },
     "NonFungibleToken": {
       "source": "./modules/flow-utils/cadence/contracts/NonFungibleToken.cdc",
       "aliases": {
