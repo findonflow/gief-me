@@ -1,26 +1,43 @@
+
 import Test
 
 import "BaseTest"
 
-pub contract TestGieftCollection: BaseTest {
 
-    pub let blockchain: Test.Blockchain 
-    pub let accounts: {String: AnyStruct}
+/**/////////////////////////////////////////////////////////////
+//                              SETUP                         //
+/////////////////////////////////////////////////////////////**/
 
-    pub fun test_createGieftCollection() {
-        let acct = self.blockchain.createAccount()
-        self.txExecutor("../../../transactions/collection/create_gieft_collection.cdc", [acct], [], nil, nil)
-    }
+pub fun setup() {
 
-    pub fun test_createGieftCollection_alreadyCreated() {
-        let acct = self.blockchain.createAccount()
-        self.txExecutor("../../../transactions/collection/create_gieft_collection.cdc", [acct], [], nil, nil)
-        self.txExecutor("../../../transactions/collection/create_gieft_collection.cdc", [acct], [], nil, nil)
-    }
+    //  Accounts
+    
+    let admin = blockchain.createAccount()
 
-    init () {
-        self.blockchain = Test.newEmulatorBlockchain()
-        self.accounts = {}
-    }
+    // Contracts
+
+    accounts["Giefts"] = admin
+
+    blockchain.useConfiguration(Test.Configuration({
+        "Giefts": admin.address
+    }))
+
+    deploy("Giefts", admin, "../../../contracts/Giefts.cdc")
 }
+
+/**/////////////////////////////////////////////////////////////
+//                              TESTS                         //
+/////////////////////////////////////////////////////////////**/
+
+pub fun test_createGieftCollection() {
+    let acct = blockchain.createAccount()
+    txExecutor("../../../transactions/collection/create_gieft_collection.cdc", [acct], [], nil, nil)
+}
+
+pub fun test_createGieftCollection_alreadyCreated() {
+    let acct = blockchain.createAccount()
+    txExecutor("../../../transactions/collection/create_gieft_collection.cdc", [acct], [], nil, nil)
+    txExecutor("../../../transactions/collection/create_gieft_collection.cdc", [acct], [], nil, nil)
+}
+
 
