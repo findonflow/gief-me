@@ -6,6 +6,9 @@
         "emulator": "f8d6e0586b0a20c7"
       }
     },
+    "Test2": {
+      "source": "./cadence/tests/util/Test2.cdc"
+    },
     "NonFungibleToken": {
       "source": "./modules/flow-utils/cadence/contracts/NonFungibleToken.cdc",
       "aliases": {
@@ -33,6 +36,7 @@
       }
     },
     "ExampleNFT": {
+      "source": "./modules/flow-utils/cadence/contracts/ExampleToken.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }

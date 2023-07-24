@@ -1,6 +1,9 @@
 import Test
 import "Test2"
 
+pub let admin = blockchain.createAccount()
+
+
 /**/////////////////////////////////////////////////////////////
 //                              SETUP                         //
 /////////////////////////////////////////////////////////////**/
@@ -10,14 +13,17 @@ pub fun setup() {
     //  Accounts
     
     let user = blockchain.createAccount()
-    let gifter = blockchain.createAccount()
-    let admin = blockchain.createAccount()
+    let gifter_1 = blockchain.createAccount()
+    let gifter_2 = blockchain.createAccount()
     
     // Contracts
 
     accounts["Giefts"] = admin
     accounts["ExampleNFT"] = admin
     accounts["MetadataViews"] = admin
+    accounts["user"] = user
+    accounts["gifter_1"] = gifter_1
+    accounts["gifter_2"] = gifter_2
 
     blockchain.useConfiguration(Test.Configuration({
         "HybridCustody": admin.address,
@@ -26,7 +32,7 @@ pub fun setup() {
     }))
 
     deploy("Giefts", admin, "../contracts/Giefts.cdc")
-    deploy("ExampleNFT", admin, "../modules/flow-utils/cadence/contract/ExampleNFT.cdc")
-    deploy("MetadataViews", admin, "../modules/flow-utils/cadence/contract/MetadataViews.cdc")
+    deploy("ExampleNFT", admin, "../../modules/flow-utils/cadence/contracts/ExampleNFT.cdc")
+    deploy("MetadataViews", admin, "../../modules/flow-utils/cadence/contract/MetadataViews.cdc")
 }
 

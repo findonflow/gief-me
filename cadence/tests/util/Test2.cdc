@@ -5,14 +5,11 @@
 // - txExecutor
 // - getErrorMessagePointer
 
-
 /* A util file wrapping all of the required test utility */
 
 import Test
 
 pub let blockchain = Test.newEmulatorBlockchain()
-
-pub let adminAccount = blockchain.createAccount()
 pub let accounts: {String: Test.Account} = {}
 
 pub fun deploy(_ contractName: String, _ account: Test.Account, _ path: String) {
