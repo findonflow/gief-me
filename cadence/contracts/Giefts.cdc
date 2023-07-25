@@ -66,6 +66,7 @@ pub contract Giefts {
 
     pub resource Gieft: GieftPublic, GieftPrivate {
         // A collection of NFTs
+        // nfts are stored as a map of uuids to NFTs
         access(contract) var nfts: @{UInt64: NonFungibleToken.NFT}
 
         // The hashed password to claim an nft

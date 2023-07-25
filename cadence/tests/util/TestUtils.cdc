@@ -8,6 +8,8 @@ pub let blockchain = Test.newEmulatorBlockchain()
 
 pub let accounts: {String: Test.Account} = {}
 
+pub let admin = blockchain.createAccount()
+
 /**/////////////////////////////////////////////////////////////
 //                          HELPERS                          //
 /////////////////////////////////////////////////////////////**/
@@ -39,7 +41,6 @@ pub fun scriptExecutor(_ scriptName: String, _ arguments: [AnyStruct]): AnyStruc
 
 pub fun txExecutor(_ txName: String, _ signers: [Test.Account], _ arguments: [AnyStruct], _ expectedError: String?, _ expectedErrorType: ErrorType?): Bool {
     let txCode = loadCode(txName, "transactions")
-
     let authorizers: [Address] = []
     for signer in signers {
         authorizers.append(signer.address)
@@ -63,6 +64,7 @@ pub fun txExecutor(_ txName: String, _ signers: [Test.Account], _ arguments: [An
                 .concat("\n")
                 .concat("But received - ")
                 .concat(err.message)
+                
             assert(hasEmittedCorrectMessage, message: failureMessage)
             return true
         }
