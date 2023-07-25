@@ -19,8 +19,6 @@ pub fun deploy(_ contractName: String, _ account: Test.Account, _ path: String) 
         account: account,
         arguments: [],
     )
-
-    Test.expect(err, Test.beNil())
     if err != nil {
         panic(err!.message)
     }

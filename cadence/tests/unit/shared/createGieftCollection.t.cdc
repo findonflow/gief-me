@@ -1,8 +1,7 @@
 
 import Test
 
-import "BaseTest"
-
+import "TestUtils"
 
 /**/////////////////////////////////////////////////////////////
 //                              SETUP                         //
@@ -16,12 +15,15 @@ pub fun setup() {
 
     // Contracts
 
+    accounts["NonFungibleToken"] = admin
     accounts["Giefts"] = admin
 
     blockchain.useConfiguration(Test.Configuration({
+        "NonFungibleToken": admin.address,
         "Giefts": admin.address
     }))
-
+    
+    deploy("NonFungibleToken", admin, "../../../../modules/flow-utils/cadence/contracts/NonFungibleToken.cdc")
     deploy("Giefts", admin, "../../../contracts/Giefts.cdc")
 }
 
