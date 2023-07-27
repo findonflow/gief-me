@@ -2,8 +2,12 @@ import "Giefts"
 import "NonFungibleToken"
 import "ExampleNFT"
 
-// This transaction attempts to pack a gieft by using another accounts GieftCollection Public Capability
-// it should fail because the packGieft function is only available to the GieftCollection Private Capability
+// This transaction withdraws NFTs from the ExampleNFT collection and packs them into a Gieft
+// The Gieft is then stored in the GieftCollection
+// The Gieft is encrypted with the password provided
+
+// @params: ids - the ids of the NFTs to be packed into the Gieft
+// @params: password - the password to encrypt the Gieft with
 
 transaction(ids: [UInt64], password: [UInt8]) {
 

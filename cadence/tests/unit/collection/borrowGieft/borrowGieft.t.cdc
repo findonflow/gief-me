@@ -32,87 +32,41 @@ pub fun setup() {
 //                              TESTS                         //
 /////////////////////////////////////////////////////////////**/
 
-pub fun test_packGieft_notOwner_publicCapability() {
-    // Admin
+pub fun test_borrow_gieft_ids_not_initialized () {
+    // Owner
     let owner = blockchain.createAccount()
-    // User
-    let not_owner = blockchain.createAccount()
 
-    // Setup admin Gieft collection
+    // Get gieft reference
+    let gieft = scriptExecutor(
+        "../../../../scripts/collection/borrow_gieft.cdc",
+        [owner.address, 0 as UInt64])
+
+    // Assert
+    assert(gieft == nil)
+}
+
+pub fun test_borrow_gieft_empty () {
+    // Owner
+    let owner = blockchain.createAccount()
+
+    // Setup owner Gieft collection
     txExecutor("../../../../transactions/collection/create_gieft_collection.cdc",
         [owner], 
         [], 
         nil, 
         nil)
 
-    // Setup user NFT collection
-    txExecutor(
-        "../../../../../modules/flow-utils/cadence/transactions/examplenft/setup.cdc", 
-        [not_owner], 
-        [], 
-        nil, 
-        nil)
+    // Get gieft reference
+    let gieft = scriptExecutor(
+        "../../../../scripts/collection/borrow_gieft.cdc",
+        [owner.address, 0 as UInt64])
 
-    // Mint NFT
-    txExecutor(
-        "../../../../../modules/flow-utils/cadence/transactions/examplenft/mint.cdc", 
-        [admin], 
-        [not_owner.address], 
-        nil, 
-        nil)
-
-    // Pack Gieft
-    let errorMessage: String = "member of restricted type is not accessible: packGieft"
-
-    txExecutor(
-        "../packGieft/transactions/pack_gieft_not_owner_public_capability.cdc",
-        [not_owner],
-        [owner.address],
-        errorMessage,
-        ErrorType.TX_PANIC)
+    // Assert
+    let expectedGieft = nil
+    assert(gieft == expectedGieft)
 }
 
-pub fun test_packGieft_notOwner_privateCapability() {
-    // Admin
-    let owner = blockchain.createAccount()
-    // User
-    let not_owner = blockchain.createAccount()
-
-    // Setup admin Gieft collection
-    txExecutor("../../../../transactions/collection/create_gieft_collection.cdc",
-        [owner], 
-        [], 
-        nil, 
-        nil)
-
-    // Setup user NFT collection
-    txExecutor(
-        "../../../../../modules/flow-utils/cadence/transactions/examplenft/setup.cdc", 
-        [not_owner], 
-        [], 
-        nil, 
-        nil)
-
-    // Mint NFT
-    txExecutor(
-        "../../../../../modules/flow-utils/cadence/transactions/examplenft/mint.cdc", 
-        [admin], 
-        [not_owner.address], 
-        nil, 
-        nil)
-
-    // Pack Gieft
-    let errorMessage: String = "unexpectedly found nil while forcing an Optional value"
-
-    txExecutor(
-        "../packGieft/transactions/pack_gieft_not_owner_private_capability.cdc",
-        [not_owner],
-        [owner.address],
-        errorMessage,
-        ErrorType.TX_PANIC)
-}
-
-pub fun test_packGieft () {
+pub fun test_borrow_gieft () {
     // Admin
     let owner = blockchain.createAccount()
 
@@ -139,8 +93,7 @@ pub fun test_packGieft () {
         nil, 
         nil)
 
-    // Pack Gieft
-
+     // Pack Gieft
     let password: [UInt8] = HashAlgorithm.KECCAK_256.hash("a very secret password".utf8)
     let ids = scriptExecutor(
         "../../external/scripts/get_collection_ids.cdc",
@@ -152,4 +105,16 @@ pub fun test_packGieft () {
         [ids, password],
         nil,
         nil)
+    
+    // Get gieft ids
+    let gieftIDs = scriptExecutor(
+        "../../../../scripts/collection/get_gieft_ids.cdc",
+        [owner.address])
+
+    // Get gieft reference password
+    let gieftPassword = scriptExecutor(
+        "../borrowGieft/scripts/borrow_first_gieft_password.cdc",
+        [owner.address])
+
+    assert((gieftPassword as! [UInt8]?)! == password)
 }

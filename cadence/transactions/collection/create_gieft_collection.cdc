@@ -1,5 +1,8 @@
 import "Giefts"
 
+// This transaction initializes the GieftCollection for the signer
+// and sets up the public/private capability links
+
 transaction {
     prepare(acct: AuthAccount) {
     if acct.borrow<&Giefts.GieftCollection>(from: Giefts.GieftsStoragePath) == nil {

@@ -1,0 +1,5 @@
+borrowGieft.t.cdc
+├── when the address does not have the collection resource with the given gieftID
+|  └── it will return nil
+└── when the address has a collection resource with the given gieftID
+    └──  it will return a reference to the gieft

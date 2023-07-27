@@ -2,4 +2,4 @@
 
 set -e
 
-flow test --cover ./cadence/tests/**/**/**.t.cdc
+flow test --cover $(find ./cadence/tests -name '*.t.cdc')

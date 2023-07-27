@@ -36,7 +36,7 @@
       }
     },
     "ExampleNFT": {
-      "source": "./modules/flow-utils/cadence/contracts/ExampleToken.cdc",
+      "source": "./modules/flow-utils/cadence/contracts/ExampleNFT.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
@@ -65,7 +65,7 @@
   },
   "deployments": {
     "emulator": {
-      "emulator-account": ["Giefts", "NonFungibleToken"]
+      "emulator-account": ["Giefts", "ExampleNFT", "TestUtils", "NonFungibleToken"]
     }
   }
 }

@@ -1,0 +1,5 @@
+getGieftIDs.t.cdc
+├── when the address does not have a collection resource
+|  └── it will return nil
+└── when the address has a collection resource
+    └──  it will return the gieft ids
