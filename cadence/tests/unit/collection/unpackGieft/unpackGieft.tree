@@ -1,5 +1,13 @@
-borrowGieft.t.cdc
-├── when the address does not have the collection resource with the given gieftID
-|  └── it will return nil
-└── when the address has a collection resource with the given gieftID
-    └──  it will return a reference to the gieft
+unpackGieft.t.cdc
+├── when the caller is not the owner of the collection resource
+|  ├── when the caller borrows the collection public capability and calls packGieft
+|  │  └── it should revert
+|  └── when the caller borrows the collection private capability and calls packGieft
+|     └── it should revert
+├── when the caller is the owner of the collection resource
+    ├── when the gieft does not exist
+    |  └── it should revert
+    ├── when the gieft exists
+        ├──  it should unpack all nfts from the gieft
+        ├──  it should emit an Unpacked event for each nft unpacked
+        └──  it should return the nft resources

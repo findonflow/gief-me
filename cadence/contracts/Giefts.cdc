@@ -37,6 +37,7 @@ pub contract Giefts {
 
     pub resource interface GieftPublic {
         pub fun claimNft(_password: String): @NonFungibleToken.NFT
+        pub fun getNftIDs(): [UInt64]
     }
 
     pub resource interface GieftPrivate {
@@ -54,7 +55,7 @@ pub contract Giefts {
     pub resource interface GieftCollectionPrivate {
         pub fun packGieft(_password: [UInt8], _nfts: @{UInt64: NonFungibleToken.NFT})
         pub fun addNftToGieft(_gieft: UInt64, _nft: @NonFungibleToken.NFT)
-        pub fun unpackGiefts(_giefts: [UInt64]): @[NonFungibleToken.NFT]
+        pub fun unpackGieft(_gieft: UInt64): @{UInt64: NonFungibleToken.NFT} 
     }
 
     /**//////////////////////////////////////////////////////////////
@@ -108,6 +109,11 @@ pub contract Giefts {
             return <-nft
         }
 
+        // get all NFT ids
+        pub fun getNftIDs(): [UInt64] {
+            return self.nfts.keys
+        }
+
         init (password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
             self.nfts <- nfts
             self.password = password
@@ -150,11 +156,19 @@ pub contract Giefts {
         }
 
         // unpack a gieft
-        // @params _gieft: the uuid(s) of the gieft(s) to unpack
-        pub fun unpackGiefts(_giefts: [UInt64]): @[NonFungibleToken.NFT] {
-            var nfts: @[NonFungibleToken.NFT] <- []
-            for gieft in _giefts {
-                nfts.append( <- self.borrowGieft(gieft)!.unpack(_nft: gieft))
+        // @params _gieft: the uuid of the gieft to unpack
+        pub fun unpackGieft(_gieft: UInt64): @{UInt64: NonFungibleToken.NFT} {
+            pre {
+                self.giefts.keys.contains(_gieft) : "Gieft does not exist"
+            }
+            var nfts: @{UInt64: NonFungibleToken.NFT} <- {}
+
+            let gieft = self.borrowGieft(_gieft)!
+            let nftIDs = gieft.getNftIDs()
+            for nftID in nftIDs {
+                let nft <- gieft.unpack(_nft: nftID)
+                let oldNft <- nfts[nftID] <- nft
+                destroy oldNft
             }
             return <-nfts
         }

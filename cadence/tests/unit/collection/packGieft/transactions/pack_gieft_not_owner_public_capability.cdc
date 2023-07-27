@@ -3,7 +3,8 @@ import "NonFungibleToken"
 import "ExampleNFT"
 
 // This transaction attempts to pack a gieft by using another accounts GieftCollection Public Capability
-// it should fail because the packGieft function is only available to the GieftCollection Private Capability
+// it should fail because the packGieft function is only available to the GieftCollection Private Capability which is
+// only available to the owner of the GieftCollection
 
 transaction(owner: Address) {
 
