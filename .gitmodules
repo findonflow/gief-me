@@ -1,4 +1,0 @@
-[submodule "modules/flow-utils"]
-	path = modules/flow-utils
-	url = https://github.com/Flowtyio/flow-utils.git
-	branch = change-imports
