@@ -4,10 +4,10 @@ unpackGieft.t.cdc
 |  │  └── it should revert
 |  └── when the caller borrows the collection private capability and calls packGieft
 |     └── it should revert
-├── when the caller is the owner of the collection resource
+└── when the caller is the owner of the collection resource
     ├── when the gieft does not exist
     |  └── it should revert
-    ├── when the gieft exists
+    └── when the gieft exists
         ├──  it should unpack all nfts from the gieft
         ├──  it should emit an Unpacked event for each nft unpacked
         └──  it should return the nft resources
