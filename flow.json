@@ -65,7 +65,7 @@
   },
   "deployments": {
     "emulator": {
-      "emulator-account": ["Giefts", "ExampleNFT", "TestUtils", "NonFungibleToken"]
+      "emulator-account": ["Giefts", "TestUtils", "NonFungibleToken"]
     }
   }
 }
