@@ -2,9 +2,9 @@ import "Giefts"
 import "NonFungibleToken"
 import "ExampleNFT"
 
-// This transaction attempts to unpack a gieft by using another accounts GieftCollection Private Capability
-// it should fail because the unpackGieft function is only available to the GieftCollection Private Capability which is
-// only available to the owner of the GieftCollection
+// This transaction unpacks a gieft and deposits the NFTs into the owner's nft collection
+
+// @params gieftID: The ID of the gieft to unpack
 
 transaction(gieftID: UInt64) {
 
