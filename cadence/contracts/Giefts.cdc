@@ -73,9 +73,6 @@ pub contract Giefts {
         // The hashed password to claim an nft
         pub var password: [UInt8]
         
-        // a map of addresses that have claimed the gift
-        pub var claimed: {Address: Bool}
-
         // add an NFT to the gieft
         access(contract) fun addNft(_nft: @NonFungibleToken.NFT) {
             pre {
