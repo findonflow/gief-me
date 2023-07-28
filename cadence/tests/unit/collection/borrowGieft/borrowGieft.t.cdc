@@ -32,7 +32,7 @@ pub fun setup() {
 //                              TESTS                         //
 /////////////////////////////////////////////////////////////**/
 
-pub fun test_borrow_gieft_ids_not_initialized () {
+pub fun test_borrowGieft_not_initialized () {
     // Owner
     let owner = blockchain.createAccount()
 
@@ -45,7 +45,7 @@ pub fun test_borrow_gieft_ids_not_initialized () {
     assert(gieft == nil)
 }
 
-pub fun test_borrow_gieft_empty () {
+pub fun test_borrowGieft_empty () {
     // Owner
     let owner = blockchain.createAccount()
 
@@ -66,7 +66,7 @@ pub fun test_borrow_gieft_empty () {
     assert(gieft == expectedGieft)
 }
 
-pub fun test_borrow_gieft () {
+pub fun test_borrowGieft () {
     // Admin
     let owner = blockchain.createAccount()
 
