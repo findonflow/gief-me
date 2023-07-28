@@ -21,11 +21,11 @@ pub fun setup() {
     deploy(
         "NonFungibleToken", 
         admin, 
-        "../../../../modules/flow-utils/cadence/contracts/NonFungibleToken.cdc")
+        "../../../../../modules/flow-utils/cadence/contracts/NonFungibleToken.cdc")
     deploy(
         "Giefts", 
         admin, 
-        "../../../contracts/Giefts.cdc")
+        "../../../../contracts/Giefts.cdc")
 }
 
 /**/////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ pub fun test_createGieftCollection() {
 
     // Initialize transaction
     txExecutor(
-        "../../../transactions/collection/create_gieft_collection.cdc", 
+        "../../../../transactions/collection/create_gieft_collection.cdc", 
         [acct], 
         [], 
         nil, 
@@ -51,13 +51,13 @@ pub fun test_createGieftCollection_alreadyCreated() {
 
     // Initialize transaction
     txExecutor(
-        "../../../transactions/collection/create_gieft_collection.cdc", 
+        "../../../../transactions/collection/create_gieft_collection.cdc", 
         [acct], 
         [], 
         nil, 
         nil)
     txExecutor(
-        "../../../transactions/collection/create_gieft_collection.cdc", 
+        "../../../../transactions/collection/create_gieft_collection.cdc", 
         [acct], 
         [], 
         nil, 

@@ -36,6 +36,7 @@ pub contract Giefts {
     // Gieft
 
     pub resource interface GieftPublic {
+        pub let password: [UInt8]
         pub fun claimNft(_password: String): @NonFungibleToken.NFT
         pub fun getNftIDs(): [UInt64]
     }
@@ -48,7 +49,7 @@ pub contract Giefts {
     // GieftCollection
 
     pub resource interface GieftCollectionPublic {
-        pub fun borrowGieft(_ _gieft: UInt64): &Gieft?
+        pub fun borrowGieft(_ _gieft: UInt64): &Gieft{GieftPublic}?
         pub fun getGieftIDs(): [UInt64]
     }
 
@@ -71,8 +72,8 @@ pub contract Giefts {
         access(contract) var nfts: @{UInt64: NonFungibleToken.NFT}
 
         // The hashed password to claim an nft
-        pub var password: [UInt8]
-        
+        pub let password: [UInt8]
+
         // add an NFT to the gieft
         access(contract) fun addNft(_nft: @NonFungibleToken.NFT) {
             pre {
@@ -114,7 +115,6 @@ pub contract Giefts {
         init (password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
             self.nfts <- nfts
             self.password = password
-            self.claimed = {}
             emit Packed(gieft: self.uuid, nfts: self.nfts.keys)
         }
 
@@ -149,7 +149,7 @@ pub contract Giefts {
             pre {
                 self.giefts.keys.contains(_gieft) : "Gieft does not exist"
             }
-            self.borrowGieft(_gieft)!.addNft(_nft: <-_nft)
+            self.borrowGieftPrivate(_gieft)!.addNft(_nft: <-_nft)
         }
 
         // unpack a gieft
@@ -160,7 +160,7 @@ pub contract Giefts {
             }
             var nfts: @{UInt64: NonFungibleToken.NFT} <- {}
 
-            let gieft = self.borrowGieft(_gieft)!
+            let gieft = self.borrowGieftPrivate(_gieft)!
             let nftIDs = gieft.getNftIDs()
             for nftID in nftIDs {
                 let nft <- gieft.unpack(_nft: nftID)
@@ -172,7 +172,11 @@ pub contract Giefts {
 
         // borrow a gieft reference
         // @params _gieft: the uuid of the gieft to borrow
-        pub fun borrowGieft(_ _gieft: UInt64): &Gieft? {
+        pub fun borrowGieft(_ _gieft: UInt64): &Gieft{GieftPublic}? {
+            return &self.giefts[_gieft] as &Gieft?
+        }
+
+        access(contract) fun borrowGieftPrivate(_ _gieft: UInt64): &Gieft{GieftPrivate, GieftPublic}? {
             return &self.giefts[_gieft] as &Gieft?
         }
 
@@ -197,19 +201,6 @@ pub contract Giefts {
     // create a new gieft collection resource
     pub fun createGieftCollection (): @GieftCollection {
         return <-create GieftCollection()
-    }
-
-    // get the gieft collection resource from an address
-    // @params _from: the address to get the gieft collection from
-    // @params _gieft: the gieft uuid to fetch
-    // @returns: the gieft resource
-    pub fun fetch(_ from: Address, _gieft: UInt64): &Gieft? {
-        let capability = getAccount(from).getCapability<&GieftCollection>(/public/Giefts)
-        if capability.check() {
-            return capability.borrow()!.borrowGieft(_gieft)
-        } else {
-            return nil
-        }
     }
 
     init () {

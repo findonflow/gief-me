@@ -6,7 +6,7 @@ import "Giefts"
 // @return: the gieft reference
 
 pub fun main(owner: Address): [UInt8]? {
-    var gieft: &Giefts.Gieft? = nil
+    var gieft: &Giefts.Gieft{Giefts.GieftPublic}? = nil
     let ids = getAccount(owner).getCapability(Giefts.GieftsPublicPath).borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>()?.getGieftIDs()!
     return getAccount(owner).getCapability(Giefts.GieftsPublicPath).borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>()?.borrowGieft(ids[0])!?.password
 }
