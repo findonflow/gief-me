@@ -32,7 +32,7 @@ pub fun setup() {
 //                              TESTS                         //
 /////////////////////////////////////////////////////////////**/
 
-pub fun test_get_gieft_ids_not_initialized () {
+pub fun test_getGieftIDs_not_initialized () {
     // Owner
     let owner = blockchain.createAccount()
 
@@ -45,7 +45,7 @@ pub fun test_get_gieft_ids_not_initialized () {
     assert(ids == nil)
 }
 
-pub fun test_get_gieft_ids_empty () {
+pub fun test_getGieftIDs_empty () {
     // Owner
     let owner = blockchain.createAccount()
 
@@ -66,7 +66,7 @@ pub fun test_get_gieft_ids_empty () {
     assert(ids as? [UInt64]? == expectedIds)
 }
 
-pub fun test_get_gieft_ids () {
+pub fun test_getGieftIDs () {
     // Admin
     let owner = blockchain.createAccount()
 

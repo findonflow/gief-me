@@ -32,7 +32,7 @@ pub fun setup() {
 //                              TESTS                         //
 /////////////////////////////////////////////////////////////**/
 
-pub fun testGetNftIds () {
+pub fun test_getNftIDs () {
     // Admin
     let owner = blockchain.createAccount()
 
