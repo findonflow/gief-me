@@ -1,4 +1,5 @@
 import "NonFungibleToken"
+import "MetadataViews"
 
 //                      _       __ _
 //                __ _(_) ___ / _| |_ ___
@@ -25,9 +26,9 @@ pub contract Giefts {
     /////////////////////////////////////////////////////////////**/
 
     pub event Packed(gieft: UInt64, nfts: [UInt64])
-    pub event Added(gieft: UInt64, nft: UInt64)
+    pub event Added(gieft: UInt64, nft: UInt64, type: String, name: String, thumbnail: String)
+    pub event Removed(gieft: UInt64, nft: UInt64, type: String, name: String, thumbnail: String)
     pub event Claimed(gieft: UInt64, nft: UInt64)
-    pub event Unpacked(gieft: UInt64, nft: UInt64)
 
     /**//////////////////////////////////////////////////////////////
     //                         INTERFACES                          //
@@ -79,7 +80,8 @@ pub contract Giefts {
             pre {
                 !self.nfts.keys.contains(nft.uuid) : "NFT uuid already added"
             }
-            emit Added(gieft: self.uuid, nft: nft.uuid)
+            let display: MetadataViews.Display = nft.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
+            emit Added(gieft: self.uuid, nft: nft.uuid, type: nft.getType().identifier, name: display.name, thumbnail: display.thumbnail.uri())
             let oldNft <- self.nfts[nft.uuid] <-nft
             destroy oldNft
         }
@@ -103,7 +105,8 @@ pub contract Giefts {
                 self.nfts.keys.contains(nft) : "NFT does not exist"
             }
             let nft <- self.nfts.remove(key: nft)!
-            emit Unpacked(gieft: self.uuid, nft: nft.uuid)
+            let display: MetadataViews.Display = nft.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
+            emit Removed(gieft: self.uuid, nft: nft.uuid, type: nft.getType().identifier, name: display.name, thumbnail: display.thumbnail.uri())
             return <-nft
         }
 
