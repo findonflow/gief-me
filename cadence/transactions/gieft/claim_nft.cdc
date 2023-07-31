@@ -11,19 +11,22 @@ import "MetadataViews"
 
 transaction(gieftOwner: Address, gieftID: UInt64, password: String) {
 
-    let gieftPublic: &Giefts.GieftCollection{Giefts.GieftCollectionPublic}
+    let gieftPublic: &Giefts.Gieft{Giefts.GieftPublic}
     let collectionPublic: &AnyResource{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}
-    let nft: @NonFungibleToken.NFT
 
     prepare(acct: AuthAccount) {
         // Borrow the GieftCollection from the gieftOwner
-        self.gieftPublic = getAccount(gieftOwner).getCapability(Giefts.GieftsPublicPath).borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>()!
+        self.gieftPublic = getAccount(gieftOwner)
+            .getCapability(Giefts.GieftsPublicPath)
+            .borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>()!
+            .borrowGieft(gieftID) 
+            ?? panic("Could not borrow gieft")
 
-        // Claim an nft from the gieft
-        self.nft <- self.gieftPublic.borrowGieft(gieftID)!.claimNft(password: password)
+        // Get a refrence to a claimable NFT
+        let nftRef = self.gieftPublic.borrowClaimableNFT() ?? panic("No NFTs to claim")
 
         // Get the nft collection data
-        let nftCollectionData = self.nft.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
+        let nftCollectionData = nftRef.resolveView(Type<MetadataViews.NFTCollectionData>())! as! MetadataViews.NFTCollectionData
 
         // Initialize the NFT collection if it doesn't exist
         if acct.borrow<&AnyResource>(from: nftCollectionData.storagePath) == nil {
@@ -48,6 +51,6 @@ transaction(gieftOwner: Address, gieftID: UInt64, password: String) {
     }
 
     execute {
-        self.collectionPublic.deposit(token: <- self.nft)
+        self.gieftPublic.claimNft(password: password, collection: self.collectionPublic)
     }
 }

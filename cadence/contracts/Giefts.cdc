@@ -28,7 +28,7 @@ pub contract Giefts {
     pub event Packed(gieft: UInt64, nfts: [UInt64])
     pub event Added(gieft: UInt64, nft: UInt64, type: String, name: String, thumbnail: String)
     pub event Removed(gieft: UInt64, nft: UInt64, type: String, name: String, thumbnail: String)
-    pub event Claimed(gieft: UInt64, nft: UInt64)
+    pub event Claimed(gieft: UInt64, nft: UInt64, type: String, name: String, thumbnail: String, gifter: Address?, giftee: Address?)
 
     /**//////////////////////////////////////////////////////////////
     //                         INTERFACES                          //
@@ -38,7 +38,8 @@ pub contract Giefts {
 
     pub resource interface GieftPublic {
         pub let password: [UInt8]
-        pub fun claimNft(password: String): @NonFungibleToken.NFT
+        pub fun borrowClaimableNFT(): &NonFungibleToken.NFT?
+        pub fun claimNft(password: String, collection: &AnyResource{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection})
         pub fun getNftIDs(): [UInt64]
     }
 
@@ -86,16 +87,28 @@ pub contract Giefts {
             destroy oldNft
         }
 
+        /// borrwClaimableNFT
+        /// get a reference to the first NFT that can be claimed
+        /// @returns the first NFT that can be claimed
+        pub fun borrowClaimableNFT(): &NonFungibleToken.NFT? {
+            if self.nfts.length > 0 {
+                return &self.nfts[self.nfts.keys[0]] as &NonFungibleToken.NFT?
+            } else {
+                return nil
+            }
+        }
+
         /// claim an NFT from the gieft
         /// @params password: the password to claim the NFT
-        pub fun claimNft(password: String): @NonFungibleToken.NFT {
+        pub fun claimNft(password: String, collection: &AnyResource{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}) {
             pre {
                 self.password ==  HashAlgorithm.KECCAK_256.hash(password.utf8) : "Incorrect password"
                 self.nfts.length > 0 : "No NFTs to claim"
             }
             let nft <- self.nfts.remove(key: self.nfts.keys[0])!
-            emit Claimed(gieft: self.uuid, nft: nft.uuid)
-            return <-nft
+            let display: MetadataViews.Display = nft.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
+            emit Claimed(gieft: self.uuid, nft: nft.uuid, type: nft.getType().identifier, name: display.name, thumbnail: display.thumbnail.uri(), gifter: self.owner?.address, giftee: collection.owner?.address)
+            collection.deposit(token: <- nft)
         }
 
         /// unpack, a function to unpack an NFT from the gieft, this function is only callable by the owner
