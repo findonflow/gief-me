@@ -33,7 +33,7 @@ pub contract Giefts {
     //                         INTERFACES                          //
     /////////////////////////////////////////////////////////////**/
 
-    // Gieft
+    /// Gieft
 
     pub resource interface GieftPublic {
         pub let password: [UInt8]
@@ -46,7 +46,7 @@ pub contract Giefts {
         access(contract) fun unpack(nft: UInt64): @NonFungibleToken.NFT
     }
 
-    // GieftCollection
+    /// GieftCollection
 
     pub resource interface GieftCollectionPublic {
         pub fun borrowGieft(_ gieft: UInt64): &Gieft{GieftPublic}?
@@ -63,18 +63,18 @@ pub contract Giefts {
     //                         RESOURCES                           //
     /////////////////////////////////////////////////////////////**/
 
-    // Gieft
-    // A collection of NFTs that can be claimed by passing the correct password
+    /// Gieft
+    /// A collection of NFTs that can be claimed by passing the correct password
 
     pub resource Gieft: GieftPublic, GieftPrivate {
-        // A collection of NFTs
-        // nfts are stored as a map of uuids to NFTs
+        /// A collection of NFTs
+        /// nfts are stored as a map of uuids to NFTs
         access(contract) var nfts: @{UInt64: NonFungibleToken.NFT}
 
-        // The hashed password to claim an nft
+        /// The hashed password to claim an nft
         pub let password: [UInt8]
 
-        // add an NFT to the gieft
+        /// add an NFT to the gieft
         access(contract) fun addNft(nft: @NonFungibleToken.NFT) {
             pre {
                 !self.nfts.keys.contains(nft.uuid) : "NFT uuid already added"
@@ -84,8 +84,8 @@ pub contract Giefts {
             destroy oldNft
         }
 
-        // claim an NFT from the gieft
-        // @params password: the password to claim the NFT
+        /// claim an NFT from the gieft
+        /// @params password: the password to claim the NFT
         pub fun claimNft(password: String): @NonFungibleToken.NFT {
             pre {
                 self.password ==  HashAlgorithm.KECCAK_256.hash(password.utf8) : "Incorrect password"
@@ -96,8 +96,8 @@ pub contract Giefts {
             return <-nft
         }
 
-        // unpack, a function to unpack an NFT from the gieft, this function is only callable by the owner
-        // @params nft: the uuid of the NFT to claim
+        /// unpack, a function to unpack an NFT from the gieft, this function is only callable by the owner
+        /// @params nft: the uuid of the NFT to claim
         access(contract) fun unpack(nft: UInt64): @NonFungibleToken.NFT {
             pre {
                 self.nfts.keys.contains(nft) : "NFT does not exist"
@@ -107,7 +107,7 @@ pub contract Giefts {
             return <-nft
         }
 
-        // get all NFT ids
+        /// get all NFT ids
         pub fun getNftIDs(): [UInt64] {
             return self.nfts.keys
         }
@@ -126,25 +126,25 @@ pub contract Giefts {
         }
     }
 
-    // GieftCollection
-    // A collection of giefts
+    /// GieftCollection
+    /// A collection of giefts
 
     pub resource GieftCollection: GieftCollectionPublic, GieftCollectionPrivate  {
-        // a collection of giefts
+        /// a collection of giefts
         pub var giefts: @{UInt64: Gieft}
 
-        // create a new gieft
-        // @params password: the hashed password to claim an NFT from the Gieft
-        // @params nfts: the NFTs to add to the gieft
+        /// create a new gieft
+        /// @params password: the hashed password to claim an NFT from the Gieft
+        /// @params nfts: the NFTs to add to the gieft
         pub fun packGieft(password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
             let gieft <- create Gieft(password: password, nfts: <- nfts)
             let oldGieft <- self.giefts[gieft.uuid] <- gieft
             destroy oldGieft
         }
 
-        // add an NFT to a gieft
-        // @params gieft: the uuid of the gieft to add the NFT to
-        // @params nft: the NFT to add to the gieft
+        /// add an NFT to a gieft
+        /// @params gieft: the uuid of the gieft to add the NFT to
+        /// @params nft: the NFT to add to the gieft
         pub fun addNftToGieft(gieft: UInt64, nft: @NonFungibleToken.NFT) {
             pre {
                 self.giefts.keys.contains(gieft) : "Gieft does not exist"
@@ -152,8 +152,8 @@ pub contract Giefts {
             self.borrowGieftPrivate(gieft)!.addNft(nft: <-nft)
         }
 
-        // unpack a gieft
-        // @params gieft: the uuid of the gieft to unpack
+        /// unpack a gieft
+        /// @params gieft: the uuid of the gieft to unpack
         pub fun unpackGieft(gieft: UInt64): @{UInt64: NonFungibleToken.NFT} {
             pre {
                 self.giefts.keys.contains(gieft) : "Gieft does not exist"
@@ -170,8 +170,8 @@ pub contract Giefts {
             return <-nfts
         }
 
-        // borrow a gieft reference
-        // @params gieft: the uuid of the gieft to borrow
+        /// borrow a gieft reference
+        /// @params gieft: the uuid of the gieft to borrow
         pub fun borrowGieft(_ gieft: UInt64): &Gieft{GieftPublic}? {
             return &self.giefts[gieft] as &Gieft?
         }
@@ -180,7 +180,7 @@ pub contract Giefts {
             return &self.giefts[gieft] as &Gieft?
         }
 
-        // get all gieft ids
+        /// get all gieft ids
         pub fun getGieftIDs(): [UInt64] {
             return self.giefts.keys
         }
@@ -198,13 +198,13 @@ pub contract Giefts {
     //                         FUNCTIONS                           //
     /////////////////////////////////////////////////////////////**/
 
-    // create a new gieft collection resource
+    /// create a new gieft collection resource
     pub fun createGieftCollection (): @GieftCollection {
         return <-create GieftCollection()
     }
 
     init () {
-        // paths
+        /// paths
         self.GieftsStoragePath = /storage/Giefts
         self.GieftsPublicPath = /public/Giefts
         self.GieftsPrivatePath = /private/Giefts
