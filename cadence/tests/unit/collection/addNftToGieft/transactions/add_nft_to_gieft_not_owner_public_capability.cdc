@@ -18,6 +18,6 @@ transaction(owner: Address, gieftID: UInt64) {
     }
 
     execute {
-        self.capabilityPublic.borrow()!.addNftToGieft(_gieft: gieftID, _nft: <- self.nft)
+        self.capabilityPublic.borrow()!.addNftToGieft(gieft: gieftID,nft: <- self.nft)
     }
 }

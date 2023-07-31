@@ -16,7 +16,7 @@ transaction(owner: Address, gieftID: UInt64) {
     }
 
     execute {
-        let nfts: @{UInt64: NonFungibleToken.NFT}  <- self.capabilityPublic.borrow()!.unpackGieft(_gieft: gieftID)
+        let nfts: @{UInt64: NonFungibleToken.NFT}  <- self.capabilityPublic.borrow()!.unpackGieft(gieft: gieftID)
         for nftID in nfts.keys {
             self.collectionPublic.borrow()!.deposit(token: <- nfts.remove(key: nftID)!)
         }

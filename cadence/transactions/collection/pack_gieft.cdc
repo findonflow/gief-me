@@ -26,6 +26,6 @@ transaction(ids: [UInt64], password: [UInt8]) {
     }
 
     execute {
-        self.collectionPrivate.packGieft(_password: password, _nfts: <- self.nfts)
+        self.collectionPrivate.packGieft(password: password,nfts: <- self.nfts)
     }
 }

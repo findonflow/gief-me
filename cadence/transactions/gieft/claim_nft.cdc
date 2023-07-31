@@ -40,7 +40,7 @@ transaction(gieftOwner: Address, gieftID: UInt64, password: String) {
     }
 
     execute {
-        let nft: @NonFungibleToken.NFT  <- self.gieftPublic.borrowGieft(gieftID)!.claimNft(_password: password)
+        let nft: @NonFungibleToken.NFT  <- self.gieftPublic.borrowGieft(gieftID)!.claimNft(password: password)
         self.collectionPublic.borrow()!.deposit(token: <- nft)
     }
 }

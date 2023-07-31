@@ -19,6 +19,6 @@ transaction(gieftID: UInt64, withdrawID: UInt64) {
     }
 
     execute {
-        self.collectionPrivate.addNftToGieft(_gieft: gieftID, _nft: <- self.nft)
+        self.collectionPrivate.addNftToGieft(gieft: gieftID,nft: <- self.nft)
     }
 }

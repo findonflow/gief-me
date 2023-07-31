@@ -176,7 +176,7 @@ pub fun test_addNftToGieft_notOwner_privateCapability() {
         ErrorType.TX_PANIC)
 }
 
-pub fun test_addNftToGieft_gieft_does_not_exist () {
+pub fun test_addNftToGieftgieft_does_not_exist () {
     // Admin
     let owner = blockchain.createAccount()
 

@@ -4,7 +4,7 @@ packGieft.t.cdc
 |  │  └── it should revert
 |  └── when the caller borrows the collection private capability and calls packGieft
 |     └── it should revert
-├── when the caller is the owner of the collection resource
+└── when the caller is the owner of the collection resource
     ├──  it should pack the nfts in the gieft
     ├──  it should emit a Packed event
     └──  it should set a password for the giefta
