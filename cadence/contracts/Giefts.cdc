@@ -163,7 +163,7 @@ pub contract Giefts {
             pre {
                 self.giefts.keys.contains(gieft) : "Gieft does not exist"
             }
-            self.borrowGieftPrivate(gieft)!.addNft(nft: <-nft)
+            self.borrowGieft(gieft)!.addNft(nft: <-nft)
         }
 
         /// unpack a gieft
@@ -174,7 +174,7 @@ pub contract Giefts {
             }
             var nfts: @{UInt64: NonFungibleToken.NFT} <- {}
 
-            let gieft = self.borrowGieftPrivate(gieft)!
+            let gieft = self.borrowGieft(gieft)!
             let nftIDs = gieft.getNftIDs()
             for nftID in nftIDs {
                 let nft <- gieft.unpack(nft: nftID)
@@ -186,11 +186,7 @@ pub contract Giefts {
 
         /// borrow a gieft reference
         /// @params gieft: the uuid of the gieft to borrow
-        pub fun borrowGieft(_ gieft: UInt64): &Gieft{GieftPublic}? {
-            return &self.giefts[gieft] as &Gieft?
-        }
-
-        access(contract) fun borrowGieftPrivate(_ gieft: UInt64): &Gieft? {
+        pub fun borrowGieft(_ gieft: UInt64): &Gieft? {
             return &self.giefts[gieft] as &Gieft?
         }
 
