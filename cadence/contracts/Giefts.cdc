@@ -46,11 +46,6 @@ pub contract Giefts {
         pub fun getNftIDs(): [UInt64]
     }
 
-    pub resource interface GieftPrivate {
-        access(contract) fun addNft(nft: @NonFungibleToken.NFT)
-        access(contract) fun unpack(nft: UInt64): @NonFungibleToken.NFT
-    }
-
     /// GieftCollection
 
     pub resource interface GieftCollectionPublic {
@@ -71,7 +66,7 @@ pub contract Giefts {
     /// Gieft
     /// A collection of NFTs that can be claimed by passing the correct password
 
-    pub resource Gieft: GieftPublic, GieftPrivate {
+    pub resource Gieft: GieftPublic {
         /// A collection of NFTs
         /// nfts are stored as a map of uuids to NFTs
         access(contract) var nfts: @{UInt64: NonFungibleToken.NFT}
@@ -195,7 +190,7 @@ pub contract Giefts {
             return &self.giefts[gieft] as &Gieft?
         }
 
-        access(contract) fun borrowGieftPrivate(_ gieft: UInt64): &Gieft{GieftPrivate, GieftPublic}? {
+        access(contract) fun borrowGieftPrivate(_ gieft: UInt64): &Gieft? {
             return &self.giefts[gieft] as &Gieft?
         }
 
