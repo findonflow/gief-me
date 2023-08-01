@@ -1,0 +1,7 @@
+claimNft.t.cdc
+├── when all the nfts have been claimed
+|  └── it should revert
+├── when the caller inputs the wrong password  
+|  └── it should revert
+└── when the caller inputs the correct password
+    └── it should transfer the nft to the caller

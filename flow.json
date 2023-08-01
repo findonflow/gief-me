@@ -1,5 +1,14 @@
 {
   "contracts": {
+    "Giefts": {
+      "source": "./cadence/contracts/Giefts.cdc",
+      "aliases": {
+        "emulator": "f8d6e0586b0a20c7"
+      }
+    },
+    "TestUtils": {
+      "source": "./cadence/tests/util/TestUtils.cdc"
+    },
     "NonFungibleToken": {
       "source": "./modules/flow-utils/cadence/contracts/NonFungibleToken.cdc",
       "aliases": {
@@ -12,6 +21,7 @@
       }
     },
     "FungibleToken": {
+      "source": "./modules/flow-utils/cadence/contracts/FungibleToken.cdc",
       "aliases": {
         "emulator": "ee82856bf20e2aa6"
       }
@@ -22,11 +32,13 @@
       }
     },
     "MetadataViews": {
+      "source": "./modules/flow-utils/cadence/contracts/MetadataViews.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
     },
     "ExampleNFT": {
+      "source": "./modules/flow-utils/cadence/contracts/ExampleNFT.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
@@ -51,6 +63,11 @@
     "emulator-account": {
       "address": "f8d6e0586b0a20c7",
       "key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
+    }
+  },
+  "deployments": {
+    "emulator": {
+      "emulator-account": ["Giefts", "ExampleNFT", "TestUtils", "NonFungibleToken", "MetadataViews", "FungibleToken"]
     }
   }
 }

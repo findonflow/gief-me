@@ -1,3 +1,4 @@
 [submodule "modules/flow-utils"]
 	path = modules/flow-utils
-	url = https://github.com/green-goo-dao/flow-utils
+	url = https://github.com/highskore/flow-utils
+	branch = change-imports

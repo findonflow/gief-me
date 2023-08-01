@@ -1,0 +1,7 @@
+createGieftCollection.t.cdc
+├── when the caller has not initialized the collection
+|   └── it should initialize the collection
+└── when the caller has initialized the collection
+   └── it should skip initialization
+
+
