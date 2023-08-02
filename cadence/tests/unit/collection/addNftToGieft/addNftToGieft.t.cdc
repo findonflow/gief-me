@@ -86,7 +86,7 @@ pub fun test_addNftToGieft_notOwner_publicCapability() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        [ids, password],
+        ["testName", ids, password],
         nil,
         nil)    
 
@@ -158,7 +158,7 @@ pub fun test_addNftToGieft_notOwner_privateCapability() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        [ids, password],
+        ["testName", ids, password],
         nil,
         nil)
 
@@ -261,7 +261,7 @@ pub fun test_addNftToGieft() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        [[(ids as? [UInt64]?)!![0]], password],
+        ["testName", [(ids as? [UInt64]?)!![0]], password],
         nil,
         nil)
 
