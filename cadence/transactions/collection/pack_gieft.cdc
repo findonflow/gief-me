@@ -6,10 +6,11 @@ import "ExampleNFT"
 // The Gieft is then stored in the GieftCollection
 // The Gieft is encrypted with the password provided
 
+// @params: name - the name of the Gieft
 // @params: ids - the ids of the NFTs to be packed into the Gieft
 // @params: password - the password to encrypt the Gieft with
 
-transaction(ids: [UInt64], password: [UInt8]) {
+transaction(name: String, ids: [UInt64], password: [UInt8]) {
 
     let collectionPrivate: &Giefts.GieftCollection{Giefts.GieftCollectionPrivate}
     let nfts: @{UInt64: NonFungibleToken.NFT}
@@ -26,6 +27,6 @@ transaction(ids: [UInt64], password: [UInt8]) {
     }
 
     execute {
-        self.collectionPrivate.packGieft(password: password,nfts: <- self.nfts)
+        self.collectionPrivate.packGieft(name: name, password: password, nfts: <- self.nfts)
     }
 }

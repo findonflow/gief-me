@@ -102,7 +102,7 @@ pub fun test_getGieftIDs () {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        [ids, password],
+        ["testName", ids, password],
         nil,
         nil)
 

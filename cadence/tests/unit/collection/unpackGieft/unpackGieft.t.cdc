@@ -192,7 +192,7 @@ pub fun test_unpackGieft() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        [nftIds , password],
+        ["testName", nftIds , password],
         nil,
         nil)
 

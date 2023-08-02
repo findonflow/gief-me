@@ -54,7 +54,7 @@ pub contract Giefts {
     }
 
     pub resource interface GieftCollectionPrivate {
-        pub fun packGieft(password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT})
+        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT})
         pub fun addNftToGieft(gieft: UInt64, nft: @NonFungibleToken.NFT)
         pub fun unpackGieft(gieft: UInt64): @{UInt64: NonFungibleToken.NFT} 
     }
@@ -67,6 +67,8 @@ pub contract Giefts {
     /// A collection of NFTs that can be claimed by passing the correct password
 
     pub resource Gieft: GieftPublic {
+        ///  The name of the gieft
+        pub let name: String
         /// A collection of NFTs
         /// nfts are stored as a map of uuids to NFTs
         access(contract) var nfts: @{UInt64: NonFungibleToken.NFT}
@@ -126,7 +128,8 @@ pub contract Giefts {
             return self.nfts.keys
         }
 
-        init (password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
+        init (name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
+            self.name = name
             self.nfts <- nfts
             self.password = password
             emit Packed(gieft: self.uuid, nfts: self.nfts.keys)
@@ -150,8 +153,8 @@ pub contract Giefts {
         /// create a new gieft
         /// @params password: the hashed password to claim an NFT from the Gieft
         /// @params nfts: the NFTs to add to the gieft
-        pub fun packGieft(password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
-            let gieft <- create Gieft(password: password, nfts: <- nfts)
+        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
+            let gieft <- create Gieft(name: name, password: password, nfts: <- nfts)
             let oldGieft <- self.giefts[gieft.uuid] <- gieft
             destroy oldGieft
         }
