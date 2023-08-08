@@ -72,7 +72,7 @@ pub fun test_claimNft_all_claimed_already() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        ["testName", ids, password],
+        ["testName", ids, password, /storage/exampleNFTCollection],
         nil,
         nil)
 
@@ -138,7 +138,7 @@ pub fun test_claimNft_wrong_password() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        ["testName", ids, password],
+        ["testName", ids, password, /storage/exampleNFTCollection],
         nil,
         nil)
 
@@ -196,7 +196,7 @@ pub fun test_claimNft() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        ["testName", ids, password],
+        ["testName", ids, password, /storage/exampleNFTCollection],
         nil,
         nil)
 

@@ -149,7 +149,7 @@ pub fun test_packGieft () {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        ["testName", ids, password],
+        ["testName", ids, password, /storage/exampleNFTCollection],
         nil,
         nil)
 }
