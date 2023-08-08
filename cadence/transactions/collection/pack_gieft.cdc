@@ -1,6 +1,5 @@
 import "Giefts"
 import "NonFungibleToken"
-import "ExampleNFT"
 
 // This transaction withdraws NFTs from the ExampleNFT collection and packs them into a Gieft
 // The Gieft is then stored in the GieftCollection
@@ -10,7 +9,7 @@ import "ExampleNFT"
 // @params: ids - the ids of the NFTs to be packed into the Gieft
 // @params: password - the password to encrypt the Gieft with
 
-transaction(name: String, ids: [UInt64], password: [UInt8]) {
+transaction(name: String, ids: [UInt64], password: [UInt8], collectionPath: StoragePath) {
 
     let collectionPrivate: &Giefts.GieftCollection{Giefts.GieftCollectionPrivate}
     let nfts: @{UInt64: NonFungibleToken.NFT}
@@ -20,7 +19,7 @@ transaction(name: String, ids: [UInt64], password: [UInt8]) {
             ?? panic("Could not borrow private giefts collection capability")
         self.nfts <- {}
         for id in ids {
-            let nft <- acct.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)!.withdraw(withdrawID: id)
+            let nft <- acct.borrow<&NonFungibleToken.Collection>(from: collectionPath)!.withdraw(withdrawID: id)
             let oldNft <- self.nfts[nft.uuid] <- nft
             destroy oldNft
         }

@@ -68,7 +68,7 @@ pub fun test_getNftIDs () {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        ["testName", ids, password],
+        ["testName", ids, password, /storage/exampleNFTCollection],
         nil,
         nil)
     

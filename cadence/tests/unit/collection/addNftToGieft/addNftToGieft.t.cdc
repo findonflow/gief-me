@@ -86,7 +86,7 @@ pub fun test_addNftToGieft_notOwner_publicCapability() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        ["testName", ids, password],
+        ["testName", ids, password, /storage/exampleNFTCollection],
         nil,
         nil)    
 
@@ -158,7 +158,7 @@ pub fun test_addNftToGieft_notOwner_privateCapability() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        ["testName", ids, password],
+        ["testName", ids, password, /storage/exampleNFTCollection],
         nil,
         nil)
 
@@ -212,7 +212,7 @@ pub fun test_addNftToGieftgieft_does_not_exist () {
     txExecutor(
          "../../../../transactions/collection/add_nft_to_gieft.cdc",
         [owner],
-        [0 as UInt64, (ids as? [UInt64]?)!![0]],
+        [0 as UInt64, (ids as? [UInt64]?)!![0], /storage/exampleNFTCollection],
         errorMessage,
         ErrorType.TX_PANIC)
 }
@@ -261,7 +261,7 @@ pub fun test_addNftToGieft() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft.cdc",
         [owner],
-        ["testName", [(ids as? [UInt64]?)!![0]], password],
+        ["testName", [(ids as? [UInt64]?)!![0]], password, /storage/exampleNFTCollection],
         nil,
         nil)
 
@@ -277,7 +277,7 @@ pub fun test_addNftToGieft() {
     txExecutor(
          "../../../../transactions/collection/add_nft_to_gieft.cdc",
         [owner],
-        [(gieftIDs as? [UInt64]?)!![0], (ids as? [UInt64]?)!![0]],
+        [(gieftIDs as? [UInt64]?)!![0], (ids as? [UInt64]?)!![0], /storage/exampleNFTCollection],
         nil,
         nil)
 }
