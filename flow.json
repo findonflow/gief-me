@@ -1,21 +1,19 @@
 {
   "contracts": {
-    "Giefts": {
-      "source": "./cadence/contracts/Giefts.cdc",
+    "ExampleNFT": {
+      "source": "./modules/flow-utils/cadence/contracts/ExampleNFT.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
     },
-    "TestUtils": {
-      "source": "./cadence/tests/util/TestUtils.cdc"
-    },
-    "NonFungibleToken": {
-      "source": "./modules/flow-utils/cadence/contracts/NonFungibleToken.cdc",
+    "FUSD": {
+      "source": "",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
     },
     "FlowToken": {
+      "source": "",
       "aliases": {
         "emulator": "0ae53cb6e3f42a79"
       }
@@ -26,7 +24,8 @@
         "emulator": "ee82856bf20e2aa6"
       }
     },
-    "FUSD": {
+    "Giefts": {
+      "source": "./cadence/contracts/Giefts.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
@@ -34,25 +33,30 @@
     "MetadataViews": {
       "source": "./modules/flow-utils/cadence/contracts/MetadataViews.cdc",
       "aliases": {
-        "emulator": "f8d6e0586b0a20c7"
+        "emulator": "f8d6e0586b0a20c7",
+        "testnet": "631e88ae7f1d7c20"
       }
     },
-    "ExampleNFT": {
-      "source": "./modules/flow-utils/cadence/contracts/ExampleNFT.cdc",
+    "NFTStorefront": {
+      "source": "",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
     },
     "NFTStorefrontV2": {
+      "source": "",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
     },
-    "NFTStorefront": {
+    "NonFungibleToken": {
+      "source": "./modules/flow-utils/cadence/contracts/NonFungibleToken.cdc",
       "aliases": {
-        "emulator": "f8d6e0586b0a20c7"
+        "emulator": "f8d6e0586b0a20c7",
+        "testnet": "631e88ae7f1d7c20"
       }
-    }
+    },
+    "TestUtils": "./cadence/tests/util/TestUtils.cdc"
   },
   "networks": {
     "emulator": "127.0.0.1:3569",
@@ -60,6 +64,13 @@
     "testnet": "access.devnet.nodes.onflow.org:9000"
   },
   "accounts": {
+    "dev": {
+      "address": "a907fb6db3d071c5",
+      "key": {
+        "type": "file",
+        "location": "dev.pkey"
+      }
+    },
     "emulator-account": {
       "address": "f8d6e0586b0a20c7",
       "key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
@@ -68,6 +79,9 @@
   "deployments": {
     "emulator": {
       "emulator-account": ["Giefts", "ExampleNFT", "TestUtils", "NonFungibleToken", "MetadataViews", "FungibleToken"]
+    },
+    "testnet": {
+      "dev": ["Giefts"]
     }
   }
 }
