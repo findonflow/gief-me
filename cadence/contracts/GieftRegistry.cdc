@@ -1,21 +1,21 @@
 import "NonFungibleToken"
 import "MetadataViews"
 
-// GieftRegistry - A registry for tracking gieftIDs and the accounts that have claimed them
-// This is used to prevent a gieftID from being claimed more than once
-//
-pub contract GieftRegistry {
+// FindRegistry 
+// - A contract that allows for the creation of registries
+// - Registries are used to store a list of accounts for a UUID and TTL
+pub contract FindRegistry {
     
     /**//////////////////////////////////////////////////////////////
     //                           STRUCTS                           //
     /////////////////////////////////////////////////////////////**/
 
     /// RegistryEntry 
-    /// A struct for tracking the accounts that have claimed a gieftID
-    /// and the block height that the gieftID was added to the registry
+    ///
+    /// 
     pub struct RegistryEntry {
         pub let blockHeight: UInt64
-        access (contract) var accounts: [Address]
+        access (contract) var accounts: {Address: Bool}
         
         pub fun init(blockHeight: UInt64) {
             self.blockHeight = blockHeight
@@ -33,94 +33,150 @@ pub contract GieftRegistry {
         pub fun getAccounts(): [Address] {
             return self.accounts
         }
+
+        pub fun containsAccount(account: Address): Bool {
+            return self.accounts[account] != nil
+        }
     }
-
-    /**//////////////////////////////////////////////////////////////
-    //                            VARS                            //
-    /////////////////////////////////////////////////////////////**/
-
-    /// The registry is a dictionary of giftID to RegistryEntry
-    access(contract) var registry: {UInt64: RegistryEntry}
-
-    /// The registryTTL is the number of blocks that a gieft will be in the registry
-    pub var registryTTL: UInt64
-    
-    /**//////////////////////////////////////////////////////////////
-    //                            PATHS                            //
-    /////////////////////////////////////////////////////////////**/
-
-    pub let OperatorStoragePath: StoragePath
-    pub let OperatorPrivatePath: PrivatePath
 
     /**//////////////////////////////////////////////////////////////
     //                            EVENTS                           //
     /////////////////////////////////////////////////////////////**/
 
-    pub event AddedToRegistry(address: Address, gieftID: UInt64, blockHeight: UInt64)
-    pub event RemovedFromRegistry(address: Address, gieftID: UInt64, blockHeight: UInt64)
-    pub event UpdatedRegistryTTL(ttl: UInt64)
+    pub event Added(registry: UInt64, address: Address, id: UInt64, blockHeight: UInt64)
+    pub event Removed(registry: UInt64, address: Address, id: UInt64, blockHeight: UInt64)
+    pub event Cleared(registry: UInt64, id: UInt64)
+    pub event UpdatedTTL(registry: UInt64, ttl: UInt64)
+    pub event Deleted(registry: UInt64, owner: Address?)
 
     /**//////////////////////////////////////////////////////////////
     //                         INTERFACES                          //
     /////////////////////////////////////////////////////////////**/
 
-    pub resource interface IGieftRegistryOperator {
-        pub fun addToRegistry(gieftID: UInt64, account: Address)
-        pub fun updateRegistryTTL(ttl: UInt64)
-        pub fun createOperator(): @Operator
+    pub resource interface RegistryPublic {
+        pub fun get(id: UInt64): RegistryEntry?
+        pub fun contains(id: UInt64, account: Address): Bool
+        pub fun clearExpired(ids: [UInt64])
+    }
+
+    pub resource interface RegistryPrivate {
+        pub fun add(id: UInt64, account: Address)
+        pub fun remove(id: UInt64, account: Address)
+        pub fun updateTTL(ttl: UInt64)
     }
 
     /**//////////////////////////////////////////////////////////////
     //                         RESOURCES                           //
     /////////////////////////////////////////////////////////////**/
 
-    /// Operator
-    /// The operator resource is used to add gieftIDs to the registry
-    /// and update the registryTTL
-    pub resource Operator: IGieftRegistryOperator {
-        
-        /// addToRegistry
-        /// Add a gieftID to the registry
-        /// - Parameter gieftID: The gieftID to add to the registry
-        /// - Parameter account: The account that claimed the gieftID
-        pub fun addToRegistry(gieftID: UInt64, account: Address) {
-            // get the current block height
+    /// Registry
+    ///
+    ///
+    pub resource Entry: RegistryPublic, RegistryPrivate {
+        /// A dictionary of UUIDs to registry entries
+        pub var registry: {UInt64: RegistryEntry}
+
+        /// The registry's TTL
+        pub var registryTTL: UInt64
+
+        /// add
+        /// Add an account to the registry for a UUID
+        /// - Parameter id: The UUID to add to the registry
+        /// - Parameter account: The account to add to the registry
+        pub fun add(id: UInt64, account: Address) {
             let blockHeight: UInt64 = getCurrentBlock().height
 
-            // check if registy exists for this gieftID
-            if GieftsRegistry.registry[gieftID] == nil {
+            // check if registy exists for this UUID
+            if self.registry[id] == nil {
                 // create a new registry entry
                 let registryEntry = RegistryEntry(blockHeight: blockHeight)
                 registryEntry.addAccount(account: account)
-                GieftsRegistry.registry[gieftID] = registryEntry
+                self.registry[id] = registryEntry
             } else {
                 // get the registry entry
-                let registryEntry = GieftsRegistry.registry[gieftID]
+                let registryEntry = self.registry[id]
 
                 // check if the block height is expired
-                if registryEntry.blockHeight + GieftsRegistry.registryTTL < blockHeight {
+                if registryEntry.blockHeight + self.registryTTL < blockHeight {
                     registryEntry.addAccount(account: account)
-                                    
                     // emit event
-                    emit AddedToRegistry(address: account, gieftID: gieftID, blockHeight: blockHeight)
+                    emit Added(registry: self.uuid, address: account, gieftID: id, blockHeight: blockHeight)
                 } else {
                    return
                 }
             }
         }
 
-        /// updateRegistryTTL
-        /// Update the registryTTL
-        /// - Parameter ttl: The new registryTTL
-        pub fun updateRegistryTTL(ttl: UInt64) {
-            GieftsRegistry.registryTTL = ttl
-            emit UpdatedRegistryTTL(ttl: ttl)
+        /// remove
+        /// Remove an account from the registry for a UUID
+        /// - Parameter id: The UUID to remove from the registry
+        /// - Parameter account: The account to remove from the registry
+        pub fun remove(id: UInt64, account: Address) {
+            // check if registy exists for this UUID
+            if self.registry[id] != nil {
+                // get the registry entry
+                let registryEntry = self.registry[id]
+
+                // remove the account from the registry
+                registryEntry.removeAccount(account: account)
+
+                // emit event
+                emit RemovedFromRegistry(registry: self.uuid, address: account, id: id, blockHeight: registryEntry.blockHeight)
+            }
         }
 
-        /// createOperator
-        /// Create and return new operator resource
-        pub fun createOperator(): @Operator {
-            return <- create Operator()
+        /// updateTTL
+        /// Update the registry's TTL
+        /// - Parameter ttl: The new TTL
+        pub fun updateTTL(ttl: UInt64) {
+            self.registryTTL = ttl
+            emit UpdatedTTL(registry: self.uuid, ttl: ttl)
+        }
+
+        /// get
+        /// Get the registry entry for a UUID
+        /// - Parameter id: The UUID to get the registry entry for
+        pub fun get(id: UInt64): RegistryEntry? {
+            return self.registry[id]
+        }
+
+        /// contains
+        /// Check if an account is in the registry for a UUID
+        /// - Parameter id: The UUID to check the registry for
+        /// - Parameter account: The account to check the registry for
+        pub fun contains(id: UInt64, account: Address): Bool {
+            if self.registry[id] != nil {
+                let registryEntry = self.registry[id]
+                return registryEntry.containsAccount(account: account)
+            } else {
+                return false
+            }
+        }
+
+        /// clearExpired
+        /// Clear expired registry entries
+        /// - Parameter ids: The UUIDs to clear
+        pub fun clearExpired(ids: [UInt64]) {
+            let blockHeight: UInt64 = getCurrentBlock().height
+
+            for id in ids {
+                if self.registry[id] != nil {
+                    let registryEntry = self.registry[id]
+                    if registryEntry.blockHeight + self.registryTTL < blockHeight {
+                        self.registry.remove(id)
+                    }
+                    emit Cleared(registry: self.uuid, id: id)
+                }
+            }
+        }
+
+        init (ttl: UInt64) {
+            self.registry = {}
+            self.registryTTL = ttl
+        }
+
+        destroy() {
+            emit Deleted(registry: self.uuid, owner: self.owner?.address)
         }
     }
 
@@ -128,95 +184,14 @@ pub contract GieftRegistry {
     //                         FUNCTIONS                           //
     /////////////////////////////////////////////////////////////**/
 
-    /// removeExpiredGiefts
-    /// Remove gieftIDs from the registry that have expired
-    /// - Parameter gieftIDs: The gieftIDs to remove from the registry
-    pub fun removeExpiredGiefts(gieftIDs: [UInt64]) {
-        // get the current block height
-        let blockHeight =  getCurrentBlock()
-
-        // loop through gieftIDs
-        for gieftID in gieftIDs {
-            // check if registy exists for this gieftID
-            if GieftsRegistry.registry[gieftID] != nil {
-                // get the registry entry
-                let registryEntry = GieftsRegistry.registry[gieftID]
-
-                // check if the block height is expired
-                if registryEntry.blockHeight + GieftsRegistry.registryTTL < blockHeight {
-                    // loop through accounts
-                    for account in registryEntry.accounts {
-                        // emit event
-                        emit RemovedFromRegistry(address: account, gieftID: gieftID, blockHeight: registryEntry.blockHeight)
-                    }
-
-                    // remove the registry entry
-                    GieftsRegistry.registry.remove(key: gieftID)
-                }
-            }
-        }
-    }
-
-    /// getAccountsForGieftID
-    /// Get the accounts that have claimed a gieftID
-    /// - Parameter gieftID: The gieftID to get the accounts for
-    pub fun getAccountsForGieftID(gieftID: UInt64): [Address] {
-        // check if registy exists for this gieftID
-        if GieftsRegistry.registry[gieftID] != nil {
-            // get the registry entry
-            let registryEntry = GieftsRegistry.registry[gieftID]
-
-            // return the accounts
-            return registryEntry.getAccounts()
-        } else {
-            return []
-        }
-    }
-
-    /// getRegistryEntryForGieftID
-    /// Get the registry entry for a gieftID
-    /// - Parameter gieftID: The gieftID to get the registry entry for
-    pub fun getRegistryEntryForGieftId(gieftID: UInt64): RegistryEntry? {
-        // check if registy exists for this gieftID
-        if GieftsRegistry.registry[gieftID] != nil {
-            // get the registry entry
-            let registryEntry = GieftsRegistry.registry[gieftID]
-
-            // return the registry entry
-            return registryEntry
-        } else {
-            return nil
-        }
-    }
-
-    /// isAccountInGieftIDRegistry
-    /// Check if an account is in the registry for a gieftID
-    /// - Parameter gieftID: The gieftID to check the registry for
-    /// - Parameter account: The account to check the registry for
-    pub fun isAccountInGieftIDRegistry(gieftID: UInt64, account: Address): Bool {
-        // check if registy exists for this gieftID
-        if GieftsRegistry.registry[gieftID] != nil {
-            // get the registry entry
-            let registryEntry = GieftsRegistry.registry[gieftID]
-
-            // return if the account is in the registry
-            return registryEntry.accounts.contains(account)
-        } else {
-            return false
-        }
+    /// createRegistry
+    /// Create and return new registry resource
+    /// - Parameter ttl: The registry's TTL
+    pub fun createRegistry(ttl: UInt64): @Registry {
+        return <- create Registry(ttl: ttl)
     }
 
     init () {
-        // vars
-        self.registry = {}
-        self.registryTTL = 100
-
-        // paths
-        self.OperatorStoragePath=/storage/GieftsRegistryOperator
-        self.OperatorPrivatePath=/private/GieftsRegistryPrivate
-
-        // operator resource
-        self.account.save(<- create Operator(), to: self.OperatorStoragePath)
-        self.account.link<&Operator>(self.OperatorPrivatePath, target: self.OperatorStoragePath)
-    }
+        ///
+    }   
 }
