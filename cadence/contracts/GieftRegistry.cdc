@@ -189,6 +189,23 @@ pub contract GieftRegistry {
         }
     }
 
+    /// isAccountInGieftIDRegistry
+    /// Check if an account is in the registry for a gieftID
+    /// - Parameter gieftID: The gieftID to check the registry for
+    /// - Parameter account: The account to check the registry for
+    pub fun isAccountInGieftIDRegistry(gieftID: UInt64, account: Address): Bool {
+        // check if registy exists for this gieftID
+        if GieftsRegistry.registry[gieftID] != nil {
+            // get the registry entry
+            let registryEntry = GieftsRegistry.registry[gieftID]
+
+            // return if the account is in the registry
+            return registryEntry.accounts.contains(account)
+        } else {
+            return false
+        }
+    }
+
     init () {
         // vars
         self.registry = {}
