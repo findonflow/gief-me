@@ -24,7 +24,7 @@ pub fun setup() {
         "ExampleNFT", 
         admin, 
         "../../../../../modules/flow-utils/cadence/contracts/ExampleNFT.cdc")
-            deploy(
+    deploy(
         "FindRegistry", 
         admin, 
         "../../../../contracts/FindRegistry.cdc")

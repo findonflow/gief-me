@@ -22,7 +22,7 @@ pub contract Giefts {
     /////////////////////////////////////////////////////////////**/
 
     /// Registry capability
-    access(contract) var registryCapabilty: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>
+    access(contract) var registryCapabilty: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?
     
     /**//////////////////////////////////////////////////////////////
     //                           PATHS                            //
@@ -114,13 +114,13 @@ pub contract Giefts {
                 self.nfts.length > 0 : "No NFTs to claim"
             }
             // get the registry capability
-            let registry = Giefts.registryCapabilty.borrow() ?? panic("Could not borrow registry capability")
+            let registry = Giefts.registryCapabilty!.borrow() ?? panic("Could not borrow registry capability")
 
             // get collection owner
-            let owner = collection.owner
+            let owner = collection.owner!.address
 
             // check if the NFT has already been claimed
-            if (registry.contains(id: self.uuid, owner: owner)) {
+            if (registry.contains(id: self.uuid, account: owner)) {
                 panic ("Gieft already claimed")
             } else {
                 // remove the NFT from the gieft
@@ -136,7 +136,7 @@ pub contract Giefts {
                 collection.deposit(token: <- nft)
 
                 // add the owner to the registry
-                registry.add(id: self.uuid, owner: owner)
+                registry.add(id: self.uuid, account: owner)
             }
         }
 
