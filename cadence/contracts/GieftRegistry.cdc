@@ -70,8 +70,8 @@ pub contract FindRegistry {
     /////////////////////////////////////////////////////////////**/
 
     /// Registry
-    ///
-    ///
+    /// - A resource that represents a registry
+    /// - contains a dictionary of UUIDs to registry entries and a TTL
     pub resource Entry: RegistryPublic, RegistryPrivate {
         /// A dictionary of UUIDs to registry entries
         pub var registry: {UInt64: RegistryEntry}
