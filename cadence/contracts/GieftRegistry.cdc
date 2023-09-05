@@ -1,6 +1,3 @@
-import "NonFungibleToken"
-import "MetadataViews"
-
 // FindRegistry 
 // - A contract that allows for the creation of registries
 // - Registries are used to store a list of accounts for a UUID and TTL
@@ -14,21 +11,27 @@ pub contract FindRegistry {
     /// - A struct that represents a registry entry
     /// - A registry entry contains a block height and a map of accounts
     pub struct RegistryEntry {
+        // The block height of the registry entry
         pub let blockHeight: UInt64
+        // A map of accounts to booleans
         access (contract) var accounts: {Address: Bool}
         
-        pub fun init(blockHeight: UInt64) {
-            self.blockHeight = blockHeight
-            self.accounts = []
+        // addAccount
+        // Add an account to the registry entry
+        // - Parameter account: The account to add to the registry entry
+        access (contract) fun addAccount(account: Address) {
+            self.accounts.insert(key: account, true)
         }
 
-        access (contract) addAccount(account: Address) {
-            self.accounts.insert(key: account, value: true)
+        // removeAccount
+        // Remove an account from the registry entry
+        // - Parameter account: The account to remove from the registry entry
+        access (contract) fun removeAccount(account: Address) {
+            self.accounts.remove(key: account)
         }
 
-        access (contract) removeAccount(account: Address) {
-            self.accounts.remove(account)
-        }
+        // getAccounts
+        // Get the accounts in the registry entry
 
         pub fun getAccounts(): [Address] {
             return self.accounts.keys
@@ -36,6 +39,11 @@ pub contract FindRegistry {
 
         pub fun containsAccount(account: Address): Bool {
             return self.accounts[account] != nil && self.accounts[account] == true
+        }
+
+        init (blockHeight: UInt64) {
+            self.blockHeight = blockHeight
+            self.accounts = {}
         }
     }
 
@@ -72,7 +80,7 @@ pub contract FindRegistry {
     /// Registry
     /// - A resource that represents a registry
     /// - contains a dictionary of UUIDs to registry entries and a TTL
-    pub resource Entry: RegistryPublic, RegistryPrivate {
+    pub resource Registry: RegistryPublic, RegistryPrivate {
         /// A dictionary of UUIDs to registry entries
         pub var registry: {UInt64: RegistryEntry}
 
@@ -94,13 +102,13 @@ pub contract FindRegistry {
                 self.registry[id] = registryEntry
             } else {
                 // get the registry entry
-                let registryEntry = self.registry[id]
+                let registryEntry = self.registry[id]!
 
                 // check if the block height is expired
                 if registryEntry.blockHeight + self.registryTTL < blockHeight {
                     registryEntry.addAccount(account: account)
                     // emit event
-                    emit Added(registry: self.uuid, address: account, gieftID: id, blockHeight: blockHeight)
+                    emit Added(registry: self.uuid, address: account, id: id, blockHeight: blockHeight)
                 } else {
                    return
                 }
@@ -115,13 +123,13 @@ pub contract FindRegistry {
             // check if registy exists for this UUID
             if self.registry[id] != nil {
                 // get the registry entry
-                let registryEntry = self.registry[id]
+                let registryEntry = self.registry[id]!
 
                 // remove the account from the registry
                 registryEntry.removeAccount(account: account)
 
                 // emit event
-                emit RemovedFromRegistry(registry: self.uuid, address: account, id: id, blockHeight: registryEntry.blockHeight)
+                emit Removed(registry: self.uuid, address: account, id: id, blockHeight: registryEntry.blockHeight)
             }
         }
 
@@ -146,7 +154,7 @@ pub contract FindRegistry {
         /// - Parameter account: The account to check the registry for
         pub fun contains(id: UInt64, account: Address): Bool {
             if self.registry[id] != nil {
-                let registryEntry = self.registry[id]
+                let registryEntry = self.registry[id]!
                 return registryEntry.containsAccount(account: account)
             } else {
                 return false
@@ -161,9 +169,9 @@ pub contract FindRegistry {
 
             for id in ids {
                 if self.registry[id] != nil {
-                    let registryEntry = self.registry[id]
+                    let registryEntry = self.registry[id]!
                     if registryEntry.blockHeight + self.registryTTL < blockHeight {
-                        self.registry.remove(id)
+                        self.registry.remove(key: id)
                     }
                     emit Cleared(registry: self.uuid, id: id)
                 }
