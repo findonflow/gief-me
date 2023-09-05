@@ -11,8 +11,8 @@ pub contract FindRegistry {
     /////////////////////////////////////////////////////////////**/
 
     /// RegistryEntry 
-    ///
-    /// 
+    /// - A struct that represents a registry entry
+    /// - A registry entry contains a block height and a map of accounts
     pub struct RegistryEntry {
         pub let blockHeight: UInt64
         access (contract) var accounts: {Address: Bool}
@@ -23,7 +23,7 @@ pub contract FindRegistry {
         }
 
         access (contract) addAccount(account: Address) {
-            self.accounts.append(account)
+            self.accounts.insert(key: account, value: true)
         }
 
         access (contract) removeAccount(account: Address) {
@@ -31,11 +31,11 @@ pub contract FindRegistry {
         }
 
         pub fun getAccounts(): [Address] {
-            return self.accounts
+            return self.accounts.keys
         }
 
         pub fun containsAccount(account: Address): Bool {
-            return self.accounts[account] != nil
+            return self.accounts[account] != nil && self.accounts[account] == true
         }
     }
 
