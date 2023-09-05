@@ -6,6 +6,9 @@
         "emulator": "f8d6e0586b0a20c7"
       }
     },
+    "FindRegistry": {
+      "source": "./cadence/contracts/FindRegistry.cdc",
+    }
     "TestUtils": {
       "source": "./cadence/tests/util/TestUtils.cdc"
     },
@@ -67,7 +70,7 @@
   },
   "deployments": {
     "emulator": {
-      "emulator-account": ["Giefts", "ExampleNFT", "TestUtils", "NonFungibleToken", "MetadataViews", "FungibleToken"]
+      "emulator-account": ["Giefts", "ExampleNFT", "TestUtils", "NonFungibleToken", "MetadataViews", "FungibleToken", "FindRegistry", "NFTStorefrontV2", "NFTStorefront", "FUSD", "FlowToken"]
     }
   }
 }

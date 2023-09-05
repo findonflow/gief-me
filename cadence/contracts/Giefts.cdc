@@ -121,7 +121,7 @@ pub contract Giefts {
 
             // check if the NFT has already been claimed
             if (registry.contains(id: self.id, owner: owner)) {
-                panic ("NFT already claimed")
+                panic ("Gieft already claimed")
             } else {
                 // remove the NFT from the gieft
                 let nft <- self.nfts.remove(key: self.nfts.keys[0])!
@@ -136,7 +136,7 @@ pub contract Giefts {
                 collection.deposit(token: <- nft)
 
                 // add the owner to the registry
-                registry.add(id: self.id, owner: owner)
+                registry.add(id: self.uuid, owner: owner)
             }
         }
 
