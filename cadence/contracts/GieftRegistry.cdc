@@ -18,14 +18,14 @@ pub contract FindRegistry {
         
         // addAccount
         // Add an account to the registry entry
-        // - Parameter account: The account to add to the registry entry
+        // @params account: The account to add to the registry entry
         access (contract) fun addAccount(account: Address) {
             self.accounts.insert(key: account, true)
         }
 
         // removeAccount
         // Remove an account from the registry entry
-        // - Parameter account: The account to remove from the registry entry
+        // @params account: The account to remove from the registry entry
         access (contract) fun removeAccount(account: Address) {
             self.accounts.remove(key: account)
         }
@@ -89,8 +89,8 @@ pub contract FindRegistry {
 
         /// add
         /// Add an account to the registry for a UUID
-        /// - Parameter id: The UUID to add to the registry
-        /// - Parameter account: The account to add to the registry
+        /// @params id: The UUID to add to the registry
+        /// @params account: The account to add to the registry
         pub fun add(id: UInt64, account: Address) {
             let blockHeight: UInt64 = getCurrentBlock().height
 
@@ -117,8 +117,8 @@ pub contract FindRegistry {
 
         /// remove
         /// Remove an account from the registry for a UUID
-        /// - Parameter id: The UUID to remove from the registry
-        /// - Parameter account: The account to remove from the registry
+        /// @params id: The UUID to remove from the registry
+        /// @params account: The account to remove from the registry
         pub fun remove(id: UInt64, account: Address) {
             // check if registy exists for this UUID
             if self.registry[id] != nil {
@@ -135,7 +135,7 @@ pub contract FindRegistry {
 
         /// updateTTL
         /// Update the registry's TTL
-        /// - Parameter ttl: The new TTL
+        /// @params ttl: The new TTL
         pub fun updateTTL(ttl: UInt64) {
             self.registryTTL = ttl
             emit UpdatedTTL(registry: self.uuid, ttl: ttl)
@@ -143,15 +143,15 @@ pub contract FindRegistry {
 
         /// get
         /// Get the registry entry for a UUID
-        /// - Parameter id: The UUID to get the registry entry for
+        /// @params id: The UUID to get the registry entry for
         pub fun get(id: UInt64): RegistryEntry? {
             return self.registry[id]
         }
 
         /// contains
         /// Check if an account is in the registry for a UUID
-        /// - Parameter id: The UUID to check the registry for
-        /// - Parameter account: The account to check the registry for
+        /// @params id: The UUID to check the registry for
+        /// @params account: The account to check the registry for
         pub fun contains(id: UInt64, account: Address): Bool {
             if self.registry[id] != nil {
                 let registryEntry = self.registry[id]!
@@ -163,7 +163,7 @@ pub contract FindRegistry {
 
         /// clearExpired
         /// Clear expired registry entries
-        /// - Parameter ids: The UUIDs to clear
+        /// @params ids: The UUIDs to clear
         pub fun clearExpired(ids: [UInt64]) {
             let blockHeight: UInt64 = getCurrentBlock().height
 
@@ -194,7 +194,7 @@ pub contract FindRegistry {
 
     /// createRegistry
     /// Create and return new registry resource
-    /// - Parameter ttl: The registry's TTL
+    /// @params ttl: The registry's TTL
     pub fun createRegistry(ttl: UInt64): @Registry {
         return <- create Registry(ttl: ttl)
     }
