@@ -12,16 +12,22 @@ pub fun setup() {
 
     accounts["ExampleNFT"] = admin
     accounts["Giefts"] = admin
+    accounts["FindRegistry"] = admin
 
     blockchain.useConfiguration(Test.Configuration({
         "ExampleNFT": admin.address,
-        "Giefts": admin.address
+        "Giefts": admin.address,
+        "FindRegistry": admin.address
     }))
     
     deploy(
         "ExampleNFT", 
         admin, 
         "../../../../../modules/flow-utils/cadence/contracts/ExampleNFT.cdc")
+    deploy(
+        "FindRegistry", 
+        admin, 
+        "../../../../contracts/FindRegistry.cdc")
     deploy(
         "Giefts", 
         admin, 
