@@ -12,10 +12,12 @@ pub fun setup() {
 
     accounts["ExampleNFT"] = admin
     accounts["Giefts"] = admin
+    accounts["FindRegistry"] = admin
 
     blockchain.useConfiguration(Test.Configuration({
         "ExampleNFT": admin.address,
-        "Giefts": admin.address
+        "Giefts": admin.address,
+        "FindRegistry": admin.address
     }))
     
     deploy(
@@ -26,6 +28,10 @@ pub fun setup() {
         "Giefts", 
         admin, 
         "../../../../contracts/Giefts.cdc")
+    deploy(
+        "FindRegistry", 
+        admin, 
+        "../../../../contracts/FindRegistry.cdc")
 }
 
 /**/////////////////////////////////////////////////////////////

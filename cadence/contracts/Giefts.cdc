@@ -120,7 +120,7 @@ pub contract Giefts {
             let owner = collection.owner
 
             // check if the NFT has already been claimed
-            if (registry.contains(id: self.id, owner: owner)) {
+            if (registry.contains(id: self.uuid, owner: owner)) {
                 panic ("Gieft already claimed")
             } else {
                 // remove the NFT from the gieft
