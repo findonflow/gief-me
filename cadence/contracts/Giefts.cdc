@@ -116,6 +116,9 @@ pub contract Giefts {
                 // get collection owner
                 let owner = collection.owner!.address
 
+                // clear expired registry entries
+                registry.clearExpired(ids: [self.uuid])
+
                 // check if the NFT has already been claimed
                 if (registry.contains(id: self.uuid, account: owner)) {
                     panic ("Gieft already claimed")
