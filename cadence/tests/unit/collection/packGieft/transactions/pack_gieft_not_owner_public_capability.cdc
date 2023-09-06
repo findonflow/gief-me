@@ -22,6 +22,6 @@ transaction(owner: Address) {
 
     execute {
         let password: [UInt8] = HashAlgorithm.KECCAK_256.hash("abracadabra".utf8)
-        self.capabilityPublic.borrow()!.packGieft(name: "Test", password: password, nfts: <- self.nfts)
+        self.capabilityPublic.borrow()!.packGieft(name: "Test", password: password, nfts: <- self.nfts, registryCapability: nil)
     }
 }

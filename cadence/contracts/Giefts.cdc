@@ -15,15 +15,7 @@ import "FindRegistry"
 // Giefts - wrap NFT gifts in a box and send them to your friends.
 // The gifts can be claimed by passing the correct password.
 //
-pub contract Giefts {
-
-    /**//////////////////////////////////////////////////////////////
-    //                            VARS                            //
-    /////////////////////////////////////////////////////////////**/
-
-    /// Registry capability
-    access(contract) var registryCapabilty: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?
-    
+pub contract Giefts {    
     /**//////////////////////////////////////////////////////////////
     //                           PATHS                            //
     /////////////////////////////////////////////////////////////**/
@@ -62,7 +54,7 @@ pub contract Giefts {
     }
 
     pub resource interface GieftCollectionPrivate {
-        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT})
+        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?)
         pub fun addNftToGieft(gieft: UInt64, nft: @NonFungibleToken.NFT)
         pub fun unpackGieft(gieft: UInt64): @{UInt64: NonFungibleToken.NFT} 
     }
@@ -80,6 +72,8 @@ pub contract Giefts {
         /// A collection of NFTs
         /// nfts are stored as a map of uuids to NFTs
         access(contract) var nfts: @{UInt64: NonFungibleToken.NFT}
+        /// Registry capability
+        access(contract) let registryCapabilty: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?
 
         /// The hashed password to claim an nft
         pub let password: [UInt8]
@@ -108,36 +102,48 @@ pub contract Giefts {
 
         /// claim an NFT from the gieft
         /// @params password: the password to claim the NFT
-        pub fun claimNft(password: String, collection: &{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}) {
+        pub fun claimNft(password: String, collection: &AnyResource{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}) {
             pre {
                 self.password ==  HashAlgorithm.KECCAK_256.hash(password.utf8) : "Incorrect password"
                 self.nfts.length > 0 : "No NFTs to claim"
             }
-            // get the registry capability
-            let registry = Giefts.registryCapabilty!.borrow() ?? panic("Could not borrow registry capability")
+           
+            // check if the registry capability is set
+            if self.registryCapabilty != nil {
+                // get the registry capability
+                let registry = self.registryCapabilty!.borrow() ?? panic("Could not borrow registry capability")
 
-            // get collection owner
-            let owner = collection.owner!.address
+                // get collection owner
+                let owner = collection.owner!.address
 
-            // check if the NFT has already been claimed
-            if (registry.contains(id: self.uuid, account: owner)) {
-                panic ("Gieft already claimed")
+                // check if the NFT has already been claimed
+                if (registry.contains(id: self.uuid, account: owner)) {
+                    panic ("Gieft already claimed")
+                } else {
+                    // claim the NFT
+                    self.claim(collection: collection)
+
+                    // add the owner to the registry
+                    registry.add(id: self.uuid, account: owner)
+                }
             } else {
-                // remove the NFT from the gieft
-                let nft <- self.nfts.remove(key: self.nfts.keys[0])!
-
-                // get the display metadata
-                let display: MetadataViews.Display = nft.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
-
-                // emit the claimed event
-                emit Claimed(gieft: self.uuid, nft: nft.uuid, type: nft.getType().identifier, name: display.name, thumbnail: display.thumbnail.uri(), gifter: self.owner?.address, giftee: collection.owner?.address)
-
-                // deposit the NFT in the collection
-                collection.deposit(token: <- nft)
-
-                // add the owner to the registry
-                registry.add(id: self.uuid, account: owner)
+                // claim the NFT
+                self.claim(collection: collection)
             }
+        }
+
+        access(self) fun claim(collection: &AnyResource{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}) {
+            // remove the NFT from the gieft
+            let nft <- self.nfts.remove(key: self.nfts.keys[0])!
+
+            // get the display metadata
+            let display: MetadataViews.Display = nft.resolveView(Type<MetadataViews.Display>())! as! MetadataViews.Display
+
+            // emit the claimed event
+            emit Claimed(gieft: self.uuid, nft: nft.uuid, type: nft.getType().identifier, name: display.name, thumbnail: display.thumbnail.uri(), gifter: self.owner?.address, giftee: collection.owner?.address)
+
+            // deposit the NFT in the collection
+            collection.deposit(token: <- nft)
         }
 
         /// unpack, a function to unpack an NFT from the gieft, this function is only callable by the owner
@@ -157,10 +163,11 @@ pub contract Giefts {
             return self.nfts.keys
         }
 
-        init (name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
+        init (name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?) {
             self.name = name
             self.nfts <- nfts
             self.password = password
+            self.registryCapabilty = registryCapability
             emit Packed(gieft: self.uuid, nfts: self.nfts.keys)
         }
 
@@ -182,8 +189,8 @@ pub contract Giefts {
         /// create a new gieft
         /// @params password: the hashed password to claim an NFT from the Gieft
         /// @params nfts: the NFTs to add to the gieft
-        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
-            let gieft <- create Gieft(name: name, password: password, nfts: <- nfts)
+        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?) {
+            let gieft <- create Gieft(name: name, password: password, nfts: <- nfts, registryCapability: registryCapability)
             let oldGieft <- self.giefts[gieft.uuid] <- gieft
             destroy oldGieft
         }
@@ -246,9 +253,6 @@ pub contract Giefts {
     }
 
     init () {
-        /// vars
-        self.registryCapabilty =  nil
-
         /// paths
         self.GieftsStoragePath = /storage/Giefts
         self.GieftsPublicPath = /public/Giefts

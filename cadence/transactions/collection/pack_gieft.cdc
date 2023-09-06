@@ -26,6 +26,6 @@ transaction(name: String, ids: [UInt64], password: [UInt8], collectionPath: Stor
     }
 
     execute {
-        self.collectionPrivate.packGieft(name: name, password: password, nfts: <- self.nfts)
+        self.collectionPrivate.packGieft(name: name, password: password, nfts: <- self.nfts, registryCapability: nil)
     }
 }
