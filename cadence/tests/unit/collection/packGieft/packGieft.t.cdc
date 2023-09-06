@@ -160,7 +160,7 @@ pub fun test_packGieft () {
         nil)
 }
 
- pub fun test_packGieft_with_registry () {
+pub fun test_packGieft_with_registry () {
     // Admin
     let owner = blockchain.createAccount()
 
