@@ -1,4 +1,4 @@
-import "../../contracts/FindRegistry.cdc"
+import "FindRegistry"
 
 transaction (stor: StoragePath, priv: PrivatePath, publ: PublicPath, ttl: UInt64) {
     prepare(acct: AuthAccount) {

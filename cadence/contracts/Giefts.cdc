@@ -54,7 +54,7 @@ pub contract Giefts {
     }
 
     pub resource interface GieftCollectionPrivate {
-        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?)
+        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&FindRegistry.Registry{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?)
         pub fun addNftToGieft(gieft: UInt64, nft: @NonFungibleToken.NFT)
         pub fun unpackGieft(gieft: UInt64): @{UInt64: NonFungibleToken.NFT} 
     }
@@ -73,7 +73,7 @@ pub contract Giefts {
         /// nfts are stored as a map of uuids to NFTs
         access(contract) var nfts: @{UInt64: NonFungibleToken.NFT}
         /// Registry capability
-        access(contract) let registryCapabilty: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?
+        access(contract) let registryCapabilty: Capability<&FindRegistry.Registry{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?
 
         /// The hashed password to claim an nft
         pub let password: [UInt8]
@@ -163,7 +163,7 @@ pub contract Giefts {
             return self.nfts.keys
         }
 
-        init (name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?) {
+        init (name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&FindRegistry.Registry{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?) {
             self.name = name
             self.nfts <- nfts
             self.password = password
@@ -189,7 +189,7 @@ pub contract Giefts {
         /// create a new gieft
         /// @params password: the hashed password to claim an NFT from the Gieft
         /// @params nfts: the NFTs to add to the gieft
-        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?) {
+        pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&FindRegistry.Registry{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?) {
             let gieft <- create Gieft(name: name, password: password, nfts: <- nfts, registryCapability: registryCapability)
             let oldGieft <- self.giefts[gieft.uuid] <- gieft
             destroy oldGieft
