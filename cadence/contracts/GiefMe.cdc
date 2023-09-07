@@ -2,27 +2,26 @@ import "NonFungibleToken"
 import "MetadataViews"
 import "FindRegistry"
 
-//                      ___  __
-//        __          /'___\/\ \__
-//    __ /\_\     __ /\ \__/\ \ ,_\   ____
-//  /'_ `\/\ \  /'__`\ \ ,__\\ \ \/  /',__\
-// /\ \L\ \ \ \/\  __/\ \ \_/ \ \ \_/\__, `\
-// \ \____ \ \_\ \____\\ \_\   \ \__\/\____/
-//  \/___L\ \/_/\/____/ \/_/    \/__/\/___/
+//                      ___
+//        __          /'___\
+//    __ /\_\     __ /\ \__/         ___ ___      __
+//  /'_ `\/\ \  /'__`\ \ ,__\      /' __` __`\  /'__`\
+// /\ \L\ \ \ \/\  __/\ \ \_/      /\ \/\ \/\ \/\  __/
+// \ \____ \ \_\ \____\\ \_\       \ \_\ \_\ \_\ \____\
+//  \/___L\ \/_/\/____/ \/_/        \/_/\/_/\/_/\/____/
 //    /\____/
 //    \_/__/
-//
-// Giefts - wrap NFT gifts in a box and send them to your friends.
+// GiefMe - wrap NFT gifts in a box and send them to your friends.
 // The gifts can be claimed by passing the correct password.
 //
-pub contract Giefts {    
+pub contract GiefMe {    
     /**//////////////////////////////////////////////////////////////
     //                           PATHS                            //
     /////////////////////////////////////////////////////////////**/
 
-    pub let GieftsStoragePath: StoragePath
-    pub let GieftsPublicPath: PublicPath
-    pub let GieftsPrivatePath: PrivatePath
+    pub let GiefMeStoragePath: StoragePath
+    pub let GiefMePublicPath: PublicPath
+    pub let GiefMePrivatePath: PrivatePath
 
     /**//////////////////////////////////////////////////////////////
     //                            EVENTS                           //
@@ -183,18 +182,18 @@ pub contract Giefts {
     }
 
     /// GieftCollection
-    /// A collection of giefts
+    /// A collection of GiefMe
 
     pub resource GieftCollection: GieftCollectionPublic, GieftCollectionPrivate  {
-        /// a collection of giefts
-        pub var giefts: @{UInt64: Gieft}
+        /// a collection of GiefMe
+        pub var GiefMe: @{UInt64: Gieft}
 
         /// create a new gieft
         /// @params password: the hashed password to claim an NFT from the Gieft
         /// @params nfts: the NFTs to add to the gieft
         pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}, registryCapability: Capability<&FindRegistry.Registry{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?) {
             let gieft <- create Gieft(name: name, password: password, nfts: <- nfts, registryCapability: registryCapability)
-            let oldGieft <- self.giefts[gieft.uuid] <- gieft
+            let oldGieft <- self.GiefMe[gieft.uuid] <- gieft
             destroy oldGieft
         }
 
@@ -203,7 +202,7 @@ pub contract Giefts {
         /// @params nft: the NFT to add to the gieft
         pub fun addNftToGieft(gieft: UInt64, nft: @NonFungibleToken.NFT) {
             pre {
-                self.giefts.keys.contains(gieft) : "Gieft does not exist"
+                self.GiefMe.keys.contains(gieft) : "Gieft does not exist"
             }
             self.borrowGieft(gieft)!.addNft(nft: <-nft)
         }
@@ -212,7 +211,7 @@ pub contract Giefts {
         /// @params gieft: the uuid of the gieft to unpack
         pub fun unpackGieft(gieft: UInt64): @{UInt64: NonFungibleToken.NFT} {
             pre {
-                self.giefts.keys.contains(gieft) : "Gieft does not exist"
+                self.GiefMe.keys.contains(gieft) : "Gieft does not exist"
             }
             var nfts: @{UInt64: NonFungibleToken.NFT} <- {}
 
@@ -229,20 +228,20 @@ pub contract Giefts {
         /// borrow a gieft reference
         /// @params gieft: the uuid of the gieft to borrow
         pub fun borrowGieft(_ gieft: UInt64): &Gieft? {
-            return &self.giefts[gieft] as &Gieft?
+            return &self.GiefMe[gieft] as &Gieft?
         }
 
         /// get all gieft ids
         pub fun getGieftIDs(): [UInt64] {
-            return self.giefts.keys
+            return self.GiefMe.keys
         }
 
         init () {
-            self.giefts <- {}
+            self.GiefMe <- {}
         }
 
         destroy () {
-            destroy self.giefts
+            destroy self.GiefMe
         }
     }
 
@@ -257,8 +256,8 @@ pub contract Giefts {
 
     init () {
         /// paths
-        self.GieftsStoragePath = /storage/Giefts
-        self.GieftsPublicPath = /public/Giefts
-        self.GieftsPrivatePath = /private/Giefts
+        self.GiefMeStoragePath = /storage/GiefMe
+        self.GiefMePublicPath = /public/GiefMe
+        self.GiefMePrivatePath = /private/GiefMe
     }
 }

@@ -1,4 +1,4 @@
-import "Giefts"
+import "GiefMe"
 import "NonFungibleToken"
 
 // This transaction is used to add an NFT to a gieft
@@ -8,11 +8,11 @@ import "NonFungibleToken"
 
 transaction(gieftID: UInt64, withdrawID: UInt64, collectionPath: StoragePath) {
 
-    let collectionPrivate: &Giefts.GieftCollection{Giefts.GieftCollectionPrivate}
+    let collectionPrivate: &GiefMe.GieftCollection{GiefMe.GieftCollectionPrivate}
     let nft: @NonFungibleToken.NFT
 
     prepare(acct: AuthAccount) {
-        self.collectionPrivate = acct.borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPrivate}>(from: Giefts.GieftsStoragePath) 
+        self.collectionPrivate = acct.borrow<&GiefMe.GieftCollection{GiefMe.GieftCollectionPrivate}>(from: GiefMe.GiefMeStoragePath) 
             ?? panic("Could not borrow private giefts collection capability")
         self.nft <- acct.borrow<&NonFungibleToken.Collection>(from: collectionPath)!.withdraw(withdrawID: withdrawID)
     }

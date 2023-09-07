@@ -11,12 +11,12 @@ pub fun setup() {
     // Contracts
 
     accounts["ExampleNFT"] = admin
-    accounts["Giefts"] = admin
+    accounts["GiefMe"] = admin
     accounts["FindRegistry"] = admin
 
     blockchain.useConfiguration(Test.Configuration({
         "ExampleNFT": admin.address,
-        "Giefts": admin.address,
+        "GiefMe": admin.address,
         "FindRegistry": admin.address
     }))
     
@@ -29,9 +29,9 @@ pub fun setup() {
         admin, 
         "../../../../contracts/FindRegistry.cdc")
     deploy(
-        "Giefts", 
+        "GiefMe", 
         admin, 
-        "../../../../contracts/Giefts.cdc")
+        "../../../../contracts/GiefMe.cdc")
 }
 
 /**/////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ pub fun test_claimNft_with_registry() {
     txExecutor(
         "../../../../transactions/registry/create_registry.cdc", 
         [owner], 
-        [/storage/GieftsRegistry, /private/GieftsRegistry, /public/GieftsRegistry, UInt64(420)],
+        [/storage/GiefMeRegistry, /private/GiefMeRegistry, /public/GiefMeRegistry, UInt64(420)],
         nil, 
         nil)
 
@@ -210,7 +210,7 @@ pub fun test_claimNft_with_registry() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft_with_registry.cdc",
         [owner],
-        ["testName", ids, password, /storage/exampleNFTCollection, /private/GieftsRegistry],
+        ["testName", ids, password, /storage/exampleNFTCollection, /private/GiefMeRegistry],
         nil,
         nil)
 
@@ -253,7 +253,7 @@ pub fun test_claimNft_with_registry_twice() {
     txExecutor(
         "../../../../transactions/registry/create_registry.cdc", 
         [owner], 
-        [/storage/GieftsRegistry, /private/GieftsRegistry, /public/GieftsRegistry, UInt64(420)],
+        [/storage/GiefMeRegistry, /private/GiefMeRegistry, /public/GiefMeRegistry, UInt64(420)],
         nil, 
         nil)
 
@@ -296,7 +296,7 @@ pub fun test_claimNft_with_registry_twice() {
     txExecutor(
         "../../../../transactions/collection/pack_gieft_with_registry.cdc",
         [owner],
-        ["testName", packids, password, /storage/exampleNFTCollection, /private/GieftsRegistry],
+        ["testName", packids, password, /storage/exampleNFTCollection, /private/GiefMeRegistry],
         nil,
         nil)
 

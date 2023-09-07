@@ -1,4 +1,4 @@
-import "Giefts"
+import "GiefMe"
 import "NonFungibleToken"
 import "FindRegistry"
 
@@ -12,12 +12,12 @@ import "FindRegistry"
 
 transaction(name: String, ids: [UInt64], password: [UInt8], collectionPath: StoragePath, registryPath: PrivatePath) {
 
-    let collectionPrivate: &Giefts.GieftCollection{Giefts.GieftCollectionPrivate}
+    let collectionPrivate: &GiefMe.GieftCollection{GiefMe.GieftCollectionPrivate}
     let nfts: @{UInt64: NonFungibleToken.NFT}
     let registry: Capability<&FindRegistry.Registry{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>
 
     prepare(acct: AuthAccount) {
-        self.collectionPrivate = acct.borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPrivate}>(from: Giefts.GieftsStoragePath) 
+        self.collectionPrivate = acct.borrow<&GiefMe.GieftCollection{GiefMe.GieftCollectionPrivate}>(from: GiefMe.GiefMeStoragePath) 
             ?? panic("Could not borrow private giefts collection capability")
         self.nfts <- {}
         for id in ids {

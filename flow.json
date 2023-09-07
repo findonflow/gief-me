@@ -1,7 +1,7 @@
 {
   "contracts": {
-    "Giefts": {
-      "source": "./cadence/contracts/Giefts.cdc",
+    "GiefMe": {
+      "source": "./cadence/contracts/GiefMe.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
@@ -71,7 +71,7 @@
   "deployments": {
     "emulator": {
       "emulator-account": [
-        "Giefts",
+        "GiefMe",
         "ExampleNFT",
         "TestUtils",
         "NonFungibleToken",
