@@ -313,12 +313,12 @@ pub fun test_claimNft_with_registry_twice() {
         nil,
         nil)
 
-    let ids2 = scriptExecutor(
+    var ids2 = scriptExecutor(
         "../../external/scripts/get_collection_ids.cdc",
         [user.address])!
 
     // Assert
-    assert(ids2 as? [UInt64]? == ids as? [UInt64]?)
+    assert((ids2 as? [UInt64]?)!!.length == 1)
 
     // Try claiming NFT again
     txExecutor(
@@ -327,4 +327,11 @@ pub fun test_claimNft_with_registry_twice() {
     [owner.address, (gieftIDs as? [UInt64]?)!![0], passwordString],
     "Gieft already claimed",
     ErrorType.TX_PANIC)
+
+    ids2 = scriptExecutor(
+        "../../external/scripts/get_collection_ids.cdc",
+        [user.address])!
+
+    // Assert
+    assert((ids2 as? [UInt64]?)!!.length == 1)
 }
