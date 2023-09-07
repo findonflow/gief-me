@@ -53,6 +53,7 @@ pub contract FindRegistry {
 
     pub event Added(registry: UInt64, address: Address, id: UInt64, blockHeight: UInt64)
     pub event Removed(registry: UInt64, address: Address, id: UInt64, blockHeight: UInt64)
+    pub event Created(registry: UInt64, owner: Address?, ttl: UInt64)
     pub event Cleared(registry: UInt64, id: UInt64)
     pub event UpdatedTTL(registry: UInt64, ttl: UInt64)
     pub event Deleted(registry: UInt64, owner: Address?)
@@ -100,6 +101,7 @@ pub contract FindRegistry {
                 let registryEntry = RegistryEntry(blockHeight: blockHeight)
                 registryEntry.addAccount(account: account)
                 self.registry[id] = registryEntry
+                emit Added(registry: self.uuid, address: account, id: id, blockHeight: blockHeight)
             } else {
                 // get the registry entry
                 let registryEntry = self.registry[id]!
@@ -121,16 +123,18 @@ pub contract FindRegistry {
         /// @params account: The account to remove from the registry
         pub fun remove(id: UInt64, account: Address) {
             // check if registy exists for this UUID
-            if self.registry[id] != nil {
-                // get the registry entry
-                let registryEntry = self.registry[id]!
-
-                // remove the account from the registry
-                registryEntry.removeAccount(account: account)
-
-                // emit event
-                emit Removed(registry: self.uuid, address: account, id: id, blockHeight: registryEntry.blockHeight)
+            if self.registry[id] == nil {
+                return 
             }
+
+            // get the registry entry
+            let registryEntry = self.registry[id]!
+
+            // remove the account from the registry
+            registryEntry.removeAccount(account: account)
+
+            // emit event
+            emit Removed(registry: self.uuid, address: account, id: id, blockHeight: registryEntry.blockHeight)
         }
 
         /// updateTTL
@@ -181,6 +185,7 @@ pub contract FindRegistry {
         init (ttl: UInt64) {
             self.registry = {}
             self.registryTTL = ttl
+            emit Created(registry: self.uuid, owner: self.owner?.address, ttl: ttl)
         }
 
         destroy() {
