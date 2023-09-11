@@ -73,9 +73,10 @@ pub contract GiefMe {
         access(contract) var nfts: @{UInt64: NonFungibleToken.NFT}
         /// Registry capability
         access(contract) let registryCapabilty: Capability<&FindRegistry.Registry{FindRegistry.RegistryPublic, FindRegistry.RegistryPrivate}>?
-
         /// The hashed password to claim an nft
         pub let password: [UInt8]
+        /// A map of metadata fields 
+        access (contract) var metadata: {String: AnyStruct}
 
         /// add an NFT to the gieft
         access(contract) fun addNft(nft: @NonFungibleToken.NFT) {
@@ -170,6 +171,7 @@ pub contract GiefMe {
             self.nfts <- nfts
             self.password = password
             self.registryCapabilty = registryCapability
+            self.metadata = {}
             emit Packed(gieft: self.uuid, nfts: self.nfts.keys)
         }
 

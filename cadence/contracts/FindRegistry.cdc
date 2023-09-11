@@ -1,6 +1,15 @@
 // FindRegistry 
 // - A contract that allows for the creation of registries
 // - Registries are used to store a list of accounts for a UUID and TTL
+
+// This contract allows users to create registries where each registry maintains a list
+// of accounts associated with a UUID and enforces a Time-to-Live (TTL) mechanism
+// to prevent duplicate claims. The TTL is specified in terms of the number of blocks.
+
+// When the first entry is added to a registry, the `blockHeight` of the registry
+// entry is set to the current block height. Subsequent entries are checked against
+// this block height and the TTL to prevent duplicates.
+
 pub contract FindRegistry {
     
     /**//////////////////////////////////////////////////////////////
@@ -14,7 +23,7 @@ pub contract FindRegistry {
         // The block height of the registry entry
         pub let blockHeight: UInt64
         // A map of accounts to booleans
-        access (contract) var accounts: {Address: Bool}
+        access (contract) let accounts: {Address: Bool}
         
         // addAccount
         // Add an account to the registry entry
@@ -83,7 +92,7 @@ pub contract FindRegistry {
     /// - contains a dictionary of UUIDs to registry entries and a TTL
     pub resource Registry: RegistryPublic, RegistryPrivate {
         /// A dictionary of UUIDs to registry entries
-        pub var registry: {UInt64: RegistryEntry}
+        access (contract) let registry: {UInt64: RegistryEntry}
 
         /// The registry's TTL
         pub var registryTTL: UInt64
