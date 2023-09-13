@@ -23,7 +23,7 @@ pub contract FindRegistry {
         // The block height of the registry entry
         pub let blockHeight: UInt64
         // A map of accounts to booleans
-        access (contract) let accounts: {Address: Bool}
+        access (contract) var accounts: {Address: Bool}
         
         // addAccount
         // Add an account to the registry entry
