@@ -10,22 +10,28 @@ import "TestUtils"
 pub fun setup() {
     // Contracts
 
-    accounts["NonFungibleToken"] = admin
-    accounts["Giefts"] = admin
+    accounts["ExampleNFT"] = admin
+    accounts["GiefMe"] = admin
+    accounts["FindRegistry"] = admin
 
     blockchain.useConfiguration(Test.Configuration({
-        "NonFungibleToken": admin.address,
-        "Giefts": admin.address
+        "ExampleNFT": admin.address,
+        "GiefMe": admin.address,
+        "FindRegistry": admin.address
     }))
     
     deploy(
-        "NonFungibleToken", 
+        "ExampleNFT", 
         admin, 
-        "../../../../../modules/flow-utils/cadence/contracts/NonFungibleToken.cdc")
+        "../../../../../modules/flow-utils/cadence/contracts/ExampleNFT.cdc")
     deploy(
-        "Giefts", 
+        "FindRegistry", 
         admin, 
-        "../../../../contracts/Giefts.cdc")
+        "../../../../contracts/FindRegistry.cdc")
+    deploy(
+        "GiefMe", 
+        admin, 
+        "../../../../contracts/GiefMe.cdc")
 }
 
 /**/////////////////////////////////////////////////////////////

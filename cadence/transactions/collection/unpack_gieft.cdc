@@ -1,4 +1,4 @@
-import "Giefts"
+import "GiefMe"
 import "NonFungibleToken"
 import "ExampleNFT"
 
@@ -8,11 +8,11 @@ import "ExampleNFT"
 
 transaction(gieftID: UInt64) {
 
-    let collectionPrivate: &Giefts.GieftCollection{Giefts.GieftCollectionPrivate}
+    let collectionPrivate: &GiefMe.GieftCollection{GiefMe.GieftCollectionPrivate}
     let collectionPublic: Capability<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>
 
     prepare(acct: AuthAccount) {
-        self.collectionPrivate = acct.borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPrivate}>(from: Giefts.GieftsStoragePath) 
+        self.collectionPrivate = acct.borrow<&GiefMe.GieftCollection{GiefMe.GieftCollectionPrivate}>(from: GiefMe.GiefMeStoragePath) 
             ?? panic("Could not borrow private giefts collection capability")
         self.collectionPublic = acct.getCapability<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>(ExampleNFT.CollectionPublicPath)!
     }

@@ -1,10 +1,13 @@
 {
   "contracts": {
-    "Giefts": {
-      "source": "./cadence/contracts/Giefts.cdc",
+    "GiefMe": {
+      "source": "./cadence/contracts/GiefMe.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7"
       }
+    },
+    "FindRegistry": {
+      "source": "./cadence/contracts/FindRegistry.cdc"
     },
     "TestUtils": {
       "source": "./cadence/tests/util/TestUtils.cdc"
@@ -67,7 +70,15 @@
   },
   "deployments": {
     "emulator": {
-      "emulator-account": ["Giefts", "ExampleNFT", "TestUtils", "NonFungibleToken", "MetadataViews", "FungibleToken"]
+      "emulator-account": [
+        "GiefMe",
+        "ExampleNFT",
+        "TestUtils",
+        "NonFungibleToken",
+        "MetadataViews",
+        "FungibleToken",
+        "FindRegistry"
+      ]
     }
   }
 }

@@ -154,19 +154,14 @@ pub contract Giefts {
         /// @params password: the hashed password to claim an NFT from the Gieft
         /// @params nfts: the NFTs to add to the gieft
         pub fun packGieft(name: String, password: [UInt8], nfts: @{UInt64: NonFungibleToken.NFT}) {
-            let gieft <- create Gieft(name: name, password: password, nfts: <- nfts)
-            let oldGieft <- self.giefts[gieft.uuid] <- gieft
-            destroy oldGieft
+            panic("This contract has been deprecated, please use the new GiefMe contract")
         }
 
         /// add an NFT to a gieft
         /// @params gieft: the uuid of the gieft to add the NFT to
         /// @params nft: the NFT to add to the gieft
         pub fun addNftToGieft(gieft: UInt64, nft: @NonFungibleToken.NFT) {
-            pre {
-                self.giefts.keys.contains(gieft) : "Gieft does not exist"
-            }
-            self.borrowGieft(gieft)!.addNft(nft: <-nft)
+            panic("This contract has been deprecated, please use the new GiefMe contract")
         }
 
         /// unpack a gieft

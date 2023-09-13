@@ -1,4 +1,4 @@
-import "Giefts"
+import "GiefMe"
 import "NonFungibleToken"
 import "MetadataViews"
 
@@ -11,14 +11,14 @@ import "MetadataViews"
 
 transaction(gieftOwner: Address, gieftID: UInt64, password: String) {
 
-    let gieftPublic: &Giefts.Gieft{Giefts.GieftPublic}
+    let gieftPublic: &GiefMe.Gieft{GiefMe.GieftPublic}
     let collectionPublic: &AnyResource{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}
 
     prepare(acct: AuthAccount) {
         // Borrow the GieftCollection from the gieftOwner
         self.gieftPublic = getAccount(gieftOwner)
-            .getCapability(Giefts.GieftsPublicPath)
-            .borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>()!
+            .getCapability(GiefMe.GiefMePublicPath)
+            .borrow<&GiefMe.GieftCollection{GiefMe.GieftCollectionPublic}>()!
             .borrowGieft(gieftID) 
             ?? panic("Could not borrow gieft")
 

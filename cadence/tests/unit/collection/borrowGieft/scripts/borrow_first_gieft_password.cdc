@@ -1,4 +1,4 @@
-import "Giefts"
+import "GiefMe"
 
 // Borrow a gieft from the gieft collection
 // @param owner: the owner of the gieft
@@ -6,7 +6,7 @@ import "Giefts"
 // @return: the gieft reference
 
 pub fun main(owner: Address): [UInt8]? {
-    var gieft: &Giefts.Gieft{Giefts.GieftPublic}? = nil
-    let ids = getAccount(owner).getCapability(Giefts.GieftsPublicPath).borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>()?.getGieftIDs()!
-    return getAccount(owner).getCapability(Giefts.GieftsPublicPath).borrow<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>()?.borrowGieft(ids[0])!?.password
+    var gieft: &GiefMe.Gieft{GiefMe.GieftPublic}? = nil
+    let ids = getAccount(owner).getCapability(GiefMe.GiefMePublicPath).borrow<&GiefMe.GieftCollection{GiefMe.GieftCollectionPublic}>()?.getGieftIDs()!
+    return getAccount(owner).getCapability(GiefMe.GiefMePublicPath).borrow<&GiefMe.GieftCollection{GiefMe.GieftCollectionPublic}>()?.borrowGieft(ids[0])!?.password
 }

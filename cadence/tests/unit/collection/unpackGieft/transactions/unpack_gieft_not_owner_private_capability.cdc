@@ -1,4 +1,4 @@
-import "Giefts"
+import "GiefMe"
 import "NonFungibleToken"
 import "ExampleNFT"
 
@@ -8,11 +8,11 @@ import "ExampleNFT"
 
 transaction(owner: Address, gieftID: UInt64) {
 
-    let capabilityPrivate: Capability<&Giefts.GieftCollection{Giefts.GieftCollectionPrivate}>
+    let capabilityPrivate: Capability<&GiefMe.GieftCollection{GiefMe.GieftCollectionPrivate}>
     let collectionPublic: Capability<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>
 
     prepare(acct: AuthAccount) {
-        self.capabilityPrivate = getAccount(owner).getCapability<&Giefts.GieftCollection{Giefts.GieftCollectionPrivate}>(Giefts.GieftsPublicPath)
+        self.capabilityPrivate = getAccount(owner).getCapability<&GiefMe.GieftCollection{GiefMe.GieftCollectionPrivate}>(GiefMe.GiefMePublicPath)
         self.collectionPublic = acct.getCapability<&ExampleNFT.Collection{ExampleNFT.ExampleNFTCollectionPublic}>(ExampleNFT.CollectionPublicPath)!
     }
 

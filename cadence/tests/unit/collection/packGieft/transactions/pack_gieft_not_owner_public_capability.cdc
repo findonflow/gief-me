@@ -1,4 +1,4 @@
-import "Giefts"
+import "GiefMe"
 import "NonFungibleToken"
 import "ExampleNFT"
 
@@ -8,11 +8,11 @@ import "ExampleNFT"
 
 transaction(owner: Address) {
 
-    let capabilityPublic: Capability<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>
+    let capabilityPublic: Capability<&GiefMe.GieftCollection{GiefMe.GieftCollectionPublic}>
     let nfts: @{UInt64: NonFungibleToken.NFT}
 
     prepare(acct: AuthAccount) {
-        self.capabilityPublic = getAccount(owner).getCapability<&Giefts.GieftCollection{Giefts.GieftCollectionPublic}>(Giefts.GieftsPublicPath)
+        self.capabilityPublic = getAccount(owner).getCapability<&GiefMe.GieftCollection{GiefMe.GieftCollectionPublic}>(GiefMe.GiefMePublicPath)
         self.nfts <- {}
         let id = acct.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)!.getIDs()[0]
         let nft <- acct.borrow<&ExampleNFT.Collection>(from: ExampleNFT.CollectionStoragePath)!.withdraw(withdrawID: id)
@@ -22,6 +22,6 @@ transaction(owner: Address) {
 
     execute {
         let password: [UInt8] = HashAlgorithm.KECCAK_256.hash("abracadabra".utf8)
-        self.capabilityPublic.borrow()!.packGieft(name: "Test", password: password, nfts: <- self.nfts)
+        self.capabilityPublic.borrow()!.packGieft(name: "Test", password: password, nfts: <- self.nfts, registryCapability: nil)
     }
 }
