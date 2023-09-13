@@ -10,7 +10,7 @@ The Gieft is wrapped along with a password that is later used to unlock the Gief
 
 ## FindRegistry Contract
 
-This contract is used to store a dictonaryu of registry entries mapped to a certain uuid, each registry entry contains a block height and a user address. The contract is mainlyused to ensure that a user can only claim a Gieft once per certain block height TTL, but the registry functionality can be used for other purposes as well.
+This contract is used to store a dictionary of registry entries mapped to a certain uuid, each registry entry contains a block height and a user address. The contract is mainly used to ensure that a user can only claim a Gieft once per certain block height TTL, but the registry functionality can be used for other purposes as well.
 Registry entries can be added, removed and updated. The contract also contains a function to check if a certain registry entry exists. Registry resources should be stored at a custom path in account storage.
 
 ## Tests
